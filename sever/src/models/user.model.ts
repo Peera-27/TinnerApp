@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 import { IUserDocument, IUsermodel } from "../interfaces/user.interface"
-import { register, user } from "../types/account.types"
+import { register } from "../types/account.types"
 import { calculateAge } from "../helper/date.helper"
 import { password } from "bun"
+import { user } from "../types/user.type"
 
 const schema = new mongoose.Schema<IUserDocument, IUsermodel>({
     username: { type: String, required: true, unique: true },
@@ -14,6 +15,7 @@ const schema = new mongoose.Schema<IUserDocument, IUsermodel>({
     interest: { type: String },
     looking_for: { type: String },
     location: { type: String },
+    gender: { type: String }
 
     // todo: implement photo feature
     // photos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Photo' }],
@@ -62,6 +64,7 @@ schema.methods.toUser = function (): user {
         interest: this.interest,
         looking_for: this.looking_for,
         location: this.location,
+        gender: this.gender
         // todo: photo feature
         // photos: userPhotos,
         // todo: like feature
@@ -80,7 +83,8 @@ schema.statics.createUser = async function (registerData: register): Promise<IUs
         username: registerData.username,
         password_hash: await Bun.password.hash(registerData.password),
         date_of_birth: registerData.date_of_birth,
-        looking_for: registerData.looking_for
+        looking_for: registerData.looking_for,
+        gender: registerData.gender
     })
     await newUser.save()
     return newUser

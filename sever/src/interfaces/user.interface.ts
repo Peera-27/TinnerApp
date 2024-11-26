@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
-import { register, user } from "../types/account.types"
+import { register } from "../types/account.types"
+import { user } from "../types/user.type"
 
 type userWithout_id = Omit<user, 'id'>
 

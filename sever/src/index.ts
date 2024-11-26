@@ -8,6 +8,7 @@ import { jwtconfig } from "./configs/jwt.config"
 import { AccountController } from "./controllers/account.controller"
 import Database from "bun:sqlite"
 import { mongodb } from "./configs/database.config"
+import { UserController } from "./controllers/user.controller"
 
 mongodb.connect()
 
@@ -17,6 +18,7 @@ const app = new Elysia()
   .use(swaggerconfig)
   .use(example)
   .use(AccountController)
+  .use(UserController)
   .listen({
     port: Bun.env.PORT || 8000,
     tls: tlsConfig

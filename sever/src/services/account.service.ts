@@ -1,6 +1,8 @@
 import { error } from "elysia"
 import { User } from "../models/user.model"
-import { login, register, user } from "../types/account.types"
+import { login, register } from "../types/account.types"
+import { user } from "../types/user.type"
+
 
 export const AccountService = {
 
