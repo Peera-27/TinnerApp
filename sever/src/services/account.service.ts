@@ -3,12 +3,13 @@ import { User } from "../models/user.model"
 import { login, register, user } from "../types/account.types"
 
 export const AccountService = {
+
     login: async function (loginData: login): Promise<user> {
         const user = await User.findOne({ username: loginData.username }).exec()
         if (!user)
             throw new Error("User does not exist")
-        const vertifyPassword = await user.vertifyPassword(loginData.password)
-        if (!vertifyPassword)
+        const verifyPassword = await user.verifyPassword(loginData.password)
+        if (!verifyPassword)
             throw new Error("Password is incorrect try agian")
         return user.toUser()
     },

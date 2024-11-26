@@ -16,10 +16,10 @@ export const AccountController = new Elysia({
             const token = await jwt.sign({ id: user.id })
             return { token, user }
         } catch (error) {
-            set.status = 400
+            set.status = "Bad Request"
             if (error instanceof Error)
                 throw new Error(error.message)
-            set.status = 500
+            set.status = 'Internal Server Error'
             throw new Error('Something went wrong, try agian')
 
         }

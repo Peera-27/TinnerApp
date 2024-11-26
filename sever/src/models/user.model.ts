@@ -70,13 +70,14 @@ schema.methods.toUser = function (): user {
     }
 }
 
-schema.methods.vertifyPassword = async function (password: string): Promise<boolean> {
+schema.methods.verifyPassword = async function (password: string): Promise<boolean> {
     return await Bun.password.verify(password, this.password_hash)
 }
+
 schema.statics.createUser = async function (registerData: register): Promise<IUserDocument> {
     const newUser = await new this({
         display_name: registerData.display_name,
-        usernam: registerData.username,
+        username: registerData.username,
         password_hash: await Bun.password.hash(registerData.password),
         date_of_birth: registerData.date_of_birth,
         looking_for: registerData.looking_for
