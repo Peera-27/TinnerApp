@@ -9,10 +9,17 @@ import { AccountController } from "./controllers/account.controller"
 import Database from "bun:sqlite"
 import { mongodb } from "./configs/database.config"
 import { UserController } from "./controllers/user.controller"
+import staticPlugin from "@elysiajs/static"
+import { PhothoController } from "./controllers/photo.controller"
 
 mongodb.connect()
 
 const app = new Elysia()
+  .use(staticPlugin({
+    assets: "public/uploads",
+    prefix: "img"
+  }))
+  .use(PhothoController)
   .use(cors())
   .use(jwtconfig)
   .use(swaggerconfig)

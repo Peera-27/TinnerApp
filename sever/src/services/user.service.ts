@@ -25,10 +25,16 @@ export const userService = {
         }
 
     },
-    getByUsername: function (username: string): Promise<user> {
-        throw new Error('not implement')
+    getByUsername: async function (username: string): Promise<user> {
+        const user = await User.findOne({ username }).exec()
+        if (user)
+            return user.toUser()
+        throw new Error(`username : "${username}" not found`)
     },
-    updateProfile: function (newprofile: updatedProfile, user_id: string): Promise<user> {
-        throw new Error('not implement')
+    updateProfile: async function (newprofile: updatedProfile, user_id: string): Promise<user> {
+        const user = await User.findByIdAndUpdate(user_id, { $set: newprofile }, { new: true, runValidators: true })
+        if (user)
+            return user.toUser()
+        throw new Error('Something went wrong,try again')
     }
 }
