@@ -36,7 +36,7 @@ const _userPagination = t.Object({
 })
 
 export const _updateProfile = t.Omit(_profile, ['id', 'username', 'updated_at', 'created_at', 'last_active', 'age'])
-export const _userPaginator = CreatePagination(_user, _updateProfile)
+export const _userPaginator = CreatePagination(_user, _userPagination)
 
 export const UserDto = new Elysia().model({
     pagination: t.Optional(_userPagination),
@@ -48,4 +48,5 @@ export const UserDto = new Elysia().model({
 export type updatedProfile = Static<typeof _updateProfile>
 export type userPagination = Static<typeof _userPagination>
 export type userPaginator = Static<typeof _userPaginator>
+
 export type user = Static<typeof _user>
