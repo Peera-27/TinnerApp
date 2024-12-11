@@ -4,6 +4,7 @@ import { register } from "../types/account.types"
 import { calculateAge } from "../helper/date.helper"
 import { password } from "bun"
 import { user } from "../types/user.type"
+import { _Photo } from "./photo.model"
 
 const schema = new mongoose.Schema<IUserDocument, IUsermodel>({
     username: { type: String, required: true, unique: true },
@@ -15,10 +16,10 @@ const schema = new mongoose.Schema<IUserDocument, IUsermodel>({
     interest: { type: String },
     looking_for: { type: String },
     location: { type: String },
-    gender: { type: String }
+    gender: { type: String },
 
     // todo: implement photo feature
-    // photos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Photo' }],
+    photos: [{ type: mongoose.Schema.Types.ObjectId, ref: '_Photo' }],
     // todo: implement like feature
     // followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     // following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -31,11 +32,10 @@ schema.methods.toUser = function (): user {
     if (this.date_of_birth)
         ageString = `${calculateAge(this.date_of_birth)}`
 
-
     // todo: implement like feature
-    // const userPhotos = Array.isArray(this.photos)
-    //     ? this.photos.map(photo => (new Photo(photo)).toPhoto())
-    //     : undefined
+    const userPhotos = Array.isArray(this.photos)
+        ? this.photos.map(photo => (new _Photo(photo)).toPhoto())
+        : undefined
 
     // const parseLikeUser = (user: IUserDocument[]) => {
     //     return user.map(u => {
@@ -64,9 +64,9 @@ schema.methods.toUser = function (): user {
         interest: this.interest,
         looking_for: this.looking_for,
         location: this.location,
-        gender: this.gender
+        gender: this.gender,
         // todo: photo feature
-        // photos: userPhotos,
+        photos: userPhotos,
         // todo: like feature
         // following: following,
         // followers: followers,

@@ -1,4 +1,3 @@
-import { connect } from "bun"
 import mongoose from "mongoose"
 
 const username = Bun.env.MONGO_USERNAME || 'your-mongo-name'

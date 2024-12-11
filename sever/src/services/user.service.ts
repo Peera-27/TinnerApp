@@ -13,6 +13,7 @@ export const userService = {
         const query = User.find(filter).sort({ last_active: -1 })
         const skip = pagination.pageSize * (pagination.currentPage - 1)
         query.skip(skip).limit(pagination.pageSize)
+        .populate("photos")
 
         const [docs, total] = await Promise.all([
             query.exec(),
@@ -26,7 +27,7 @@ export const userService = {
 
     },
     getByUsername: async function (username: string): Promise<user> {
-        const user = await User.findOne({ username }).exec()
+        const user = await User.findOne({ username }).populate("photos").exec()
         if (user)
             return user.toUser()
         throw new Error(`username : "${username}" not found`)
