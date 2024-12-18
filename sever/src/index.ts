@@ -10,7 +10,8 @@ import Database from "bun:sqlite"
 import { mongodb } from "./configs/database.config"
 import { UserController } from "./controllers/user.controller"
 import staticPlugin from "@elysiajs/static"
-import { PhothoController } from "./controllers/photo.controller"
+import { PhotoController } from "./controllers/photo.controller"
+import { likeController } from "./controllers/like.controller"
 
 mongodb.connect()
 
@@ -19,13 +20,14 @@ const app = new Elysia()
     assets: "public/uploads",
     prefix: "img"
   }))
-  .use(PhothoController)
+  .use(PhotoController)
   .use(cors())
   .use(jwtconfig)
   .use(swaggerconfig)
   .use(example)
   .use(AccountController)
   .use(UserController)
+  .use(likeController)
   .listen({
     port: Bun.env.PORT || 8000,
     tls: tlsConfig

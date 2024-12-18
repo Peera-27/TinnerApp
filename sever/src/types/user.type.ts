@@ -16,14 +16,15 @@ export const _profile = t.Object({
     created_at: t.Optional(t.Date()),
     updated_at: t.Optional(t.Date()),
 
-    photos : t.Optional(t.Array(_photo))
+    photos: t.Optional(t.Array(_photo))
 })
 
 export const _user = t.Object({
     ..._profile.properties,
 
-    //follewers:_profile[]
-    //follewing:_profile[]
+    followers: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
+    following: t.Optional(t.Array(t.Union([t.Partial(_profile), t.String()]))),
+
 })
 
 
@@ -45,7 +46,8 @@ export const UserDto = new Elysia().model({
     pagination: t.Optional(_userPagination),
     updateProfile: _updateProfile,
     users: _userPaginator,
-    user: _user
+    user: _user,
+    target_id: t.Object({ target_id: t.String() }),
 })
 
 export type updatedProfile = Static<typeof _updateProfile>
