@@ -1,28 +1,25 @@
-import { password } from "bun"
-import { profile } from "bun:jsc"
-import Elysia, { Static, t } from "elysia"
-import { _user } from "./user.type"
+import Elysia, { t, Static } from "elysia"
 import { _register } from "./register.types"
+import { _user } from "./user.type"
 
 export const _login = t.Object({
+
     username: t.String(),
     password: t.String()
 })
 
 
 
-
-
-export const _userAndtoken = t.Object({
+export const _userAndToken = t.Object({
     user: _user,
     token: t.String()
 })
-
 export const AccountDto = new Elysia().model({
+    //request
     register: _register,
     login: _login,
-
-    user_and_token: _userAndtoken
+    //response
+    user_and_token: _userAndToken
 })
 
 

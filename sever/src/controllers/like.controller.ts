@@ -1,27 +1,27 @@
-import Elysia, { t } from "elysia"
-import { AuthMiddleware, AuthPaylode } from "../middlewares/auth.middleware"
-import { UserDto } from "../types/user.type"
-import { PhotoDto } from "../types/photo.type"
+import Elysia from "elysia"
+import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
 import { LikeService } from "../services/like.service"
+import { UserDto } from "../types/user.type"
 
-export const likeController = new Elysia({
+export const LikeController = new Elysia({
     prefix: "api/like",
-    tags: ['like']
+    tags: ['Like']
 })
-    .use(AuthMiddleware)
+    .use(AuthMiddleWare)
     .use(UserDto)
-    .use(PhotoDto)
+
+
     .put('/', async ({ body: { target_id }, set, Auth }) => {
         try {
-            const user_id = (Auth.payload as AuthPaylode).id
-            await LikeService.togglelke(user_id, target_id)
+            const user_id = (Auth.payload as AuthPayload).id
+            await LikeService.toggleLike(user_id, target_id)
             set.status = "No Content"
         } catch (error) {
             set.status = "Bad Request"
             throw error
         }
     }, {
-        detail: { summary: "toggle like" },
+        detail: { summary: "Toggle Like" },
         isSignIn: true,
         body: "target_id"
     })
