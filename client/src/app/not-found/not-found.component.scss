@@ -1,0 +1,56 @@
+body {
+    overflow: hidden;
+}
+
+.room-bg {
+    height: 100vh;
+    width: 100vw;
+    background: radial-gradient(circle at center center,
+            #0d7ea3 20%,
+            #021f29 80%);
+}
+
+.room-bg .bird-img {
+    position: absolute;
+    right: -100px;
+    top: -100px;
+    animation: move;
+    animation-duration: 5s;
+    transition: ease-in-out 2s;
+    width: 150px;
+    animation-iteration-count: infinite;
+}
+
+@keyframes move {
+    0% {
+        right: 400px;
+        top: 300px;
+    }
+
+    100% {
+        right: -100px;
+        top: -100px;
+    }
+}
+
+.room-bg .bird_cage-img {
+    right: 500px;
+    position: absolute;
+}
+
+.room-bg .text {
+    color: transparent;
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    background: #e8fcc2;
+    -webkit-background-clip: text;
+}
+
+.room-bg .text h1 {
+    font-size: 100px;
+}
+
+.room-bg .text h5 {
+    font-size: 50px;
+}

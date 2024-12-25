@@ -62,7 +62,7 @@ schema.methods.toUser = function (): user {
         last_active: this.last_active,
         introduction: this.introduction,
         interest: this.interest,
-        looking_for: this.looking_for,
+        looking_for: this.looking_for ?? 'all',
         location: this.location,
         gender: this.gender,
 

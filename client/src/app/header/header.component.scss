@@ -1,0 +1,21 @@
+mat-toolbar button {
+    border: none;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+    background: none;
+}
+
+mat-toolbar button.active:not(.home-button) {
+    color: aqua;
+}
+
+mat-toolbar button.active:not(.home-button) {
+    border-bottom: 0.15em solid skyblue;
+}
+
+mat-toolbar .home-button {
+    font-size: xx-large;
+    color: cadetblue;
+}
