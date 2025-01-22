@@ -18,4 +18,5 @@ export interface User {
     photoOfTheDay?: string,
     followers: User[] | string[]
     following: User[] | string[]
+    password?: string
 }

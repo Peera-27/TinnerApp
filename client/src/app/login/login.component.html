@@ -1,10 +1,6 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>
-      <button mat-flat-button [disabled]="form.invalid">
-        @if (mode === 'login') { Sign In } @if (mode === 'register') { Sign Up }
-      </button>
-    </mat-card-title>
+    @if (mode === 'login') { Sign In } @if (mode === 'register') { Sign Up }
   </mat-card-header>
   <div class="login-container">
     <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
@@ -106,6 +102,9 @@
         @if (mode === 'login') { Login } @if (mode === 'register') { Get Start }
       </button>
     </form>
+    @if(errorFormServer!== ''){
+    <span class="error">{{ errorFormServer }}</span>
+    }
     <div class="login-spacer">or</div>
     @if(mode==='login'){
     <div clss="toggle">

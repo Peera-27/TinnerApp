@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core'
+import { Component, inject, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { password } from 'bun'
 import { PasswordValidator } from '../_validator/password.validator'
@@ -11,6 +11,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker'
 import { provideNativeDateAdapter } from '@angular/material/core'
 import { MatRadioModule } from '@angular/material/radio'
 import { MatCardModule } from '@angular/material/card'
+import { AccountService } from '../_services/account.service'
+import { Router } from '@angular/router'
 
 
 @Component({
@@ -24,7 +26,9 @@ import { MatCardModule } from '@angular/material/card'
 export class LoginComponent {
   mode: 'login' | 'register' = 'login'
   form: FormGroup
-
+  public errorFormServer = ''
+  private accountService = inject(AccountService)
+  private rounter = inject(Router)
   private readonly _currentyear = new Date().getFullYear()
   readonly mindate = new Date(this._currentyear - 70, 0, 1)
   readonly maxdate = new Date(this._currentyear - 18, 11, 31)
@@ -65,7 +69,21 @@ export class LoginComponent {
       this.form.removeControl('looking_for')
     }
   }
-  onSubmit() { }
+  async onSubmit() {
+
+    console.log(this.form.value)
+    if (this.mode === 'login') {
+      const logindata = this.form.value
+      this.errorFormServer = await this.accountService.login(this.form.value)
+
+    } else {
+      this.errorFormServer = await this.accountService.register(this.form.value)
+
+    }
+    if (this.errorFormServer === '') {
+      this.rounter.navigate(['/'])
+    }
+  }
   updateErrorMessgae(ctrlName: string) {
     const control = this.form.controls[ctrlName]
     if (!control) return
@@ -88,11 +106,11 @@ export class LoginComponent {
         else if (control.hasError('invalidMaxlength'))
           this.errorMessages.password.set(' Must Bev 16🤯')
         else if (control.hasError('invalidLowerCase'))
-          this.errorMessages.password.set(' Must Bebb')
+          this.errorMessages.password.set(' Must low')
         else if (control.hasError('invalidUpperCase'))
-          this.errorMessages.password.set(' Must Bedfd')
+          this.errorMessages.password.set(' Must up')
         else if (control.hasError('invalidNumeric'))
-          this.errorMessages.password.set(' Must Berwf')
+          this.errorMessages.password.set(' Must Be number')
         else if (control.hasError('invalidSpecialChar'))
           this.errorMessages.password.set(' Must Behgh')
         else

@@ -1,11 +1,27 @@
 import { Routes } from '@angular/router'
 import { HomeComponent } from './home/home.component'
 import { NotFoundComponent } from './not-found/not-found.component'
+import { authGuard } from './_guard/auth.guard'
 
 export const routes: Routes = [
     {
         path: '',
         component: HomeComponent
+    },
+    {
+        path: '',
+        runGuardsAndResolvers: 'always',
+        canActivate: [authGuard],
+        children: [
+            {
+                path: 'member',
+                loadComponent: () => import('./member/member.component').then(c => c.MemberComponent)
+            },
+            {
+                path: 'profile',
+                loadComponent: () => import('./profile/profile.component').then(c => c.ProfileComponent)
+            }
+        ]
     },
     {
         path: 'login',
@@ -17,6 +33,8 @@ export const routes: Routes = [
     },
     {
         path: 'member',
+        runGuardsAndResolvers: 'always',
+        canActivate: [authGuard],
         loadComponent: () => import('./member/member.component').then(c => c.MemberComponent)
     },
     {
