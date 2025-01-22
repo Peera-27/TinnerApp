@@ -14,7 +14,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             {
-                path: 'member',
+                path: 'members',
                 loadComponent: () => import('./member/member.component').then(c => c.MemberComponent)
             },
             {

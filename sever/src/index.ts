@@ -9,6 +9,7 @@ import { LikeController } from "./controllers/like.controller"
 import { PhotoController } from "./controllers/photo.controller"
 import { UserController } from "./controllers/user.controller"
 import { mongodb } from "./configs/database.config"
+import { ErrorController } from "./controllers/error.controller"
 
 mongodb.connect()
 
@@ -20,7 +21,7 @@ const app = new Elysia()
   .use(cors())
   .use(jwtConfig)
   .use(AccountController)
-
+  .use(ErrorController)
   .use(UserController)
   .use(LikeController)
   .use(PhotoController)
