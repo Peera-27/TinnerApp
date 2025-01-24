@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-sever-error',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './sever-error.component.scss'
 })
 export class SeverErrorComponent {
-
+  private router = inject(Router)
+  error: undefined | { [id: string]: string | number }
+  constructor() {
+    this.error = this.router.getCurrentNavigation()?.extras.state
+  }
 }

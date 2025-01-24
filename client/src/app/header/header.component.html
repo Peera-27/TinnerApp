@@ -43,7 +43,9 @@
     {{ user()?.display_name }}
   </button>
   <mat-menu #menu="matMenu">
-    <button mat-menu-item><mat-icon>manage_accounts</mat-icon>Profile</button>
+    <button mat-menu-item routerLink="/profile">
+      <mat-icon>manage_accounts</mat-icon>Profile
+    </button>
 
     <button mat-menu-item (click)="logout()">
       <mat-icon>logout</mat-icon><span>Logout</span>

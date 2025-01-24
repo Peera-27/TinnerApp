@@ -12,15 +12,17 @@ export class AccountService {
   private _key = 'account';
   private _baseApiurl = environment.baseUrl + 'api/account/'
   private _http = inject(HttpClient)
+
   data = signal<{ user: User, token: string } | null>(null)
   constructor() {
     this.loadDataFromlocalStorage()
   }
-
+  //#region login_and_register
   logout() {
     localStorage.removeItem(this._key)
     this.data.set(null)
   }
+
   async login(logindata: { username: string, password: string }): Promise<string> {
     try {
       const url = this._baseApiurl + 'login'
@@ -32,17 +34,6 @@ export class AccountService {
       return ''
     } catch (error: any) {
       return error.error?.message
-    }
-  }
-  private saveDataTolocalStorage() {
-    const JsonString = JSON.stringify(this.data())
-    localStorage.setItem(this._key, JsonString)
-  }
-  private loadDataFromlocalStorage() {
-    const JSONstring = localStorage.getItem(this._key)
-    if (JSONstring) {
-      const data = JSON.parse(JSONstring)
-      this.data.set(data)
     }
   }
   async register(registerdata: User): Promise<string> {
@@ -58,4 +49,37 @@ export class AccountService {
       return error.error?.message
     }
   }
+  //#endregion
+  //#region local
+
+  private saveDataTolocalStorage() {
+    const JsonString = JSON.stringify(this.data())
+    localStorage.setItem(this._key, JsonString)
+  }
+  private loadDataFromlocalStorage() {
+    const JSONstring = localStorage.getItem(this._key)
+    if (JSONstring) {
+      const data = JSON.parse(JSONstring)
+      this.data.set(data)
+    }
+  }
+  //#endregion
+  //#region profile
+  async updateProfile(user: User): Promise<boolean> {
+    const url = environment.baseUrl + 'api/user/'
+    try {
+      const response = this._http.patch(url, user)
+      await firstValueFrom(response)
+      const currentUserdata = this.data()
+      if (currentUserdata) {
+        currentUserdata.user = user
+        this.data.set(currentUserdata)
+        this.saveDataTolocalStorage()
+      }
+    } catch (error) {
+      return false
+    }
+    return true
+  }
+  //#endregion
 }

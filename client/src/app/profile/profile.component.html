@@ -1,1 +1,66 @@
-<p>profile works!</p>
+@if(user){
+<div class="profile-container">
+  <mat-tab-group>
+    <mat-tab label="Profile">
+      <form (ngSubmit)="onSubmit()" #form="ngForm" autocomplete="off">
+        <mat-form-field>
+          <mat-label>Display Name</mat-label>
+          <input matInput [(ngModel)]="user.display_name" name="display_name" />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Introduction</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="user.introduction"
+            name="Introduction"
+            rows="6"
+          ></textarea>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Interest</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="user.interest"
+            name="Interest"
+            rows="6"
+          ></textarea>
+        </mat-form-field>
+
+        <mat-label>Looking For</mat-label>
+        <mat-select matInput [(ngModel)]="user.looking_for" name="Looking_for">
+          <mat-option value="male">Male</mat-option>
+          <mat-option value="female">Female</mat-option>
+          <mat-option value="all">LGBTQ+</mat-option>
+        </mat-select>
+        <mat-label>Gender</mat-label>
+        <mat-select matInput [(ngModel)]="user.gender" name="Gender">
+          <mat-option value="male">Male</mat-option>
+          <mat-option value="female">Female</mat-option>
+          <mat-option value="all">LGBTQ+</mat-option>
+        </mat-select>
+        <mat-form-field>
+          <mat-label>Location</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="user.location"
+            name="Location"
+            rows="6"
+          ></textarea>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          type="submit"
+          [disabled]="form.invalid || !form.dirty"
+        >
+          Save
+        </button>
+      </form>
+    </mat-tab>
+
+    <mat-tab label="Photo"> </mat-tab>
+  </mat-tab-group>
+</div>
+}

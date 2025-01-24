@@ -1,1 +1,123 @@
-<p>sever-error works!</p>
+<h1>ERROR {{ error?.['code'] }}</h1>
+<p>{{ error?.['message'] }}</p>
+
+<div class="content">
+  <div class="modal-links">
+    <div class="modal-link e-400">
+      <span class="modal-button">400</span>
+      <input type="checkbox" class="modal-launcher" />
+      <div class="modal-window">
+        <h2>Bad Request</h2>
+        <p>The request is malformed.</p>
+        <p>
+          The client’s HTTP request does not conform to the HTTP protocol’s
+          standards. Please, check it.
+        </p>
+        <div class="demon">
+          <div class="hole"></div>
+          <div class="cartel">
+            https://www.domain.com/%%%400_bad_request_error/
+          </div>
+          <div class="body"></div>
+          <div class="arms"></div>
+          <div class="eyes"></div>
+          <div class="mouth"></div>
+          <div class="horns"></div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+    <div class="modal-link e-401">
+      <span class="modal-button">401</span>
+      <input type="checkbox" class="modal-launcher" />
+      <div class="modal-window">
+        <h2>Unauthorized</h2>
+        <p>This page isn't working.</p>
+        <p>
+          Sorry, but you are not authorized. Access is allowed only for
+          registerd users.
+        </p>
+        <div class="demon">
+          <div class="hole"></div>
+          <div class="key"></div>
+          <div class="login"></div>
+          <div class="body"></div>
+          <div class="arms"></div>
+          <div class="eyes"></div>
+          <div class="mouth"></div>
+          <div class="horns"></div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+    <div class="modal-link e-403">
+      <span class="modal-button">403</span>
+      <input type="checkbox" class="modal-launcher" />
+      <div class="modal-window">
+        <h2>Forbidden</h2>
+        <p>You shall not pass!</p>
+        <p>
+          We are sorry, but you do not have access to this page or resource.
+          Run, you fools!
+        </p>
+        <div class="demon">
+          <div class="hole"></div>
+          <div class="prohibited"></div>
+          <div class="body"></div>
+          <div class="arms"></div>
+          <div class="eyes"></div>
+          <div class="mouth"></div>
+          <div class="horns"></div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+    <div class="modal-link e-404">
+      <span class="modal-button">404</span>
+      <input type="checkbox" class="modal-launcher" />
+      <div class="modal-window">
+        <h2>Not Found</h2>
+        <p>Sorry, nothing found.</p>
+        <p>
+          The requested resource has been deleted or moved to a different
+          location.
+        </p>
+        <div class="demon">
+          <div class="hole"></div>
+          <div class="loupe"></div>
+          <div class="body"></div>
+          <div class="arms"></div>
+          <div class="eyes"></div>
+          <div class="mouth"></div>
+          <div class="horns"></div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+    <div class="modal-link e-500">
+      <span class="modal-button">500</span>
+      <input type="checkbox" class="modal-launcher" />
+      <div class="modal-window">
+        <h2>Internal Server Error</h2>
+        <p>Something were wrong at our end.</p>
+        <p>Don't worry, it's not you - it's us.</p>
+        <p>Sorry about that.</p>
+        <div class="demon">
+          <div class="hole"></div>
+          <div class="cable left">
+            <div class="hand"></div>
+          </div>
+          <div class="cable right">
+            <div class="hand"></div>
+          </div>
+          <div class="body"></div>
+          <div class="arms"></div>
+          <div class="eyes"></div>
+          <div class="mouth"></div>
+          <div class="horns"></div>
+        </div>
+      </div>
+      <div class="modal-overlay"></div>
+    </div>
+  </div>
+</div>

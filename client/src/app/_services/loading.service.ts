@@ -11,9 +11,9 @@ export class LoadingService {
   loading() {
     this.loadingRequestCount++
     this.spinner.show(undefined, {
-      type: "ball-newton-cradle",
+      type: "ball-8bits",
       bdColor: 'rgba(183, 179, 179, 0.8)',
-      color: 'rgba(111, 185, 255, 0.8)',
+      color: 'rgba(15, 63, 108, 0.8)',
       fullScreen: true,
       size: "large"
 
