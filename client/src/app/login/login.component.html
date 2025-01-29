@@ -39,17 +39,19 @@
         />
         <mat-error>{{ errorMessages.confirm_password() }}</mat-error>
       </mat-form-field>
+
       <mat-form-field appearance="outline">
         <mat-label>Display Name</mat-label>
         <input
           matInput
-          placeholder="username"
+          placeholder="display_name"
           type="text"
           (input)="updateErrorMessgae('display_name')"
           formControlName="display_name"
         />
         <mat-error>{{ errorMessages.display_name() }}</mat-error>
       </mat-form-field>
+
       <mat-form-field appearance="outline">
         <mat-label>Date of Birth</mat-label>
         <input

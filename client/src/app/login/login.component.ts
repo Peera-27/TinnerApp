@@ -112,7 +112,7 @@ export class LoginComponent {
         else if (control.hasError('invalidNumeric'))
           this.errorMessages.password.set(' Must Be number')
         else if (control.hasError('invalidSpecialChar'))
-          this.errorMessages.password.set(' Must Behgh')
+          this.errorMessages.password.set(' Must SpecialChar')
         else
           this.errorMessages.password.set('')
         break
@@ -127,9 +127,9 @@ export class LoginComponent {
       case 'display_name':
         if (control.hasError('required'))
           this.errorMessages.display_name.set('นิ่งไว้วววววว ผมเคยเล่นเกมนี้มาก่อน')
-        else if (control.hasError('minLength'))
+        else if (control.hasError('minlength'))
           this.errorMessages.display_name.set(' Must Be at least 3 Char🤯')
-        else if (control.hasError('maxLength'))
+        else if (control.hasError('maxlength'))
           this.errorMessages.display_name.set(' Must Be at least 8 Char or fewer🤯')
         else
           this.errorMessages.display_name.set('')

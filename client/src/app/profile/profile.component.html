@@ -3,51 +3,56 @@
   <mat-tab-group>
     <mat-tab label="Profile">
       <form (ngSubmit)="onSubmit()" #form="ngForm" autocomplete="off">
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Display Name</mat-label>
           <input matInput [(ngModel)]="user.display_name" name="display_name" />
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Introduction</mat-label>
           <textarea
             matInput
             [(ngModel)]="user.introduction"
-            name="Introduction"
+            name="introduction"
             rows="6"
           ></textarea>
         </mat-form-field>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
           <mat-label>Interest</mat-label>
           <textarea
             matInput
             [(ngModel)]="user.interest"
-            name="Interest"
+            name="interest"
             rows="6"
           ></textarea>
         </mat-form-field>
 
-        <mat-label>Looking For</mat-label>
-        <mat-select matInput [(ngModel)]="user.looking_for" name="Looking_for">
-          <mat-option value="male">Male</mat-option>
-          <mat-option value="female">Female</mat-option>
-          <mat-option value="all">LGBTQ+</mat-option>
-        </mat-select>
-        <mat-label>Gender</mat-label>
-        <mat-select matInput [(ngModel)]="user.gender" name="Gender">
-          <mat-option value="male">Male</mat-option>
-          <mat-option value="female">Female</mat-option>
-          <mat-option value="all">LGBTQ+</mat-option>
-        </mat-select>
-        <mat-form-field>
-          <mat-label>Location</mat-label>
-          <textarea
+        <mat-form-field appearance="outline">
+          <mat-label>Looking For</mat-label>
+          <mat-select
             matInput
-            [(ngModel)]="user.location"
-            name="Location"
-            rows="6"
-          ></textarea>
+            [(ngModel)]="user.looking_for"
+            name="looking_for"
+          >
+            <mat-option value="male">Male</mat-option>
+            <mat-option value="female">Female</mat-option>
+            <mat-option value="all">ALL</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Gender</mat-label>
+          <mat-select matInput [(ngModel)]="user.gender" name="gender">
+            <mat-option value="male">Male</mat-option>
+            <mat-option value="female">Female</mat-option>
+            <mat-option value="all">ALL</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Location</mat-label>
+          <input matInput [(ngModel)]="user.location" name="location" />
         </mat-form-field>
 
         <button
@@ -60,7 +65,9 @@
       </form>
     </mat-tab>
 
-    <mat-tab label="Photo"> </mat-tab>
+    <mat-tab label="Photos">
+      <app-photo [user]="user"></app-photo>
+    </mat-tab>
   </mat-tab-group>
 </div>
 }

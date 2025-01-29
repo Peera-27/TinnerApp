@@ -7,10 +7,11 @@ import { MatInputModule } from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatSelectModule } from '@angular/material/select'
 import { MatButtonModule } from '@angular/material/button'
+import { PhotoComponent } from "./photo/photo.component"
 
 @Component({
   selector: 'app-profile',
-  imports: [MatButtonModule, MatSelectModule, MatTabsModule, FormsModule, MatInputModule, MatFormFieldModule],
+  imports: [MatButtonModule, MatSelectModule, MatTabsModule, FormsModule, MatInputModule, MatFormFieldModule, PhotoComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
