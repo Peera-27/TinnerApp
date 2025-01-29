@@ -3,5 +3,5 @@ export interface Photo {
     public_id: string,
     url: string,
     is_avatar: boolean,
-    created_at: Date,
+    create_at: Date,
 }

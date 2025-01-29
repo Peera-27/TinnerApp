@@ -23,7 +23,7 @@ const schema = new mongoose.Schema<IUserDocument, IUserModel>({
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+    timestamps: { createdAt: 'create_at', updatedAt: 'updated_at' }
 })
 schema.methods.toUser = function (): user {
     let ageString = 'N/A'
@@ -55,7 +55,7 @@ schema.methods.toUser = function (): user {
         id: this._id.toString(),
         display_name: this.display_name,
         username: this.username,
-        create_at: this.created_at,
+        create_at: this.create_at,
         updated_at: this.updated_at,
         // date_of_birth: this.date_of_birth,
         age: ageString,

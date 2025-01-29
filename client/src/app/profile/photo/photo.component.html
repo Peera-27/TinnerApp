@@ -8,7 +8,7 @@
 
   <mat-card class="example-card" appearance="outlined">
     <mat-card-header>
-      <p>{{ photo.created_at }}</p>
+      <p>{{ photo.create_at | timeago : true }}</p>
     </mat-card-header>
     <img
       mat-card-image
@@ -23,8 +23,12 @@
       </p>
       @if (photo.is_avatar === false) {
 
-      <button mat-button (click)="setAvatar(photo.id)">Set as Avatar</button>
-      <button mat-button (click)="deletePhoto(photo.id)">DELETE</button>
+      <button class="set-avatar" mat-button (click)="setAvatar(photo.id)">
+        Set as Avatar
+      </button>
+      <button class="delete-photo" (click)="deletePhoto(photo.id)">
+        DELETE
+      </button>
       }
     </mat-card-actions>
   </mat-card>

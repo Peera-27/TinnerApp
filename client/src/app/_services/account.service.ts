@@ -18,6 +18,55 @@ export class AccountService {
   constructor() {
     this.loadDataFromlocalStorage()
   }
+
+
+  async setAvatar(photo_id: string): Promise<void> {
+    const url = environment.baseUrl + 'api/photo/' + photo_id
+    try {
+      const response = this._http.patch(url, {})
+      await firstValueFrom(response)
+      const user = this.data()!.user
+      if (user) {
+        const photos = user.photos?.map(p => {
+          p.is_avatar = p.id === photo_id
+          return p
+        })
+        user.photos = photos
+
+        const copyData = this.data()
+        if (copyData)
+          copyData.user = user
+        this.data.set(copyData)
+        this.saveDataTolocalStorage()
+      }
+    } catch (error) {
+
+    }
+  }
+
+
+  async deletephoto(photo_id: string): Promise<void> {
+    const url = environment.baseUrl + 'api/photo/' + photo_id
+    try {
+      const response = this._http.delete(url)
+      await firstValueFrom(response)
+      const user = this.data()!.user
+      if (user) {
+        const photos = user.photos?.filter(p => p.id !== photo_id)
+        user.photos = photos
+
+        const copyData = this.data()
+        if (copyData)
+          copyData.user = user
+        this.data.set(copyData)
+        this.saveDataTolocalStorage()
+      }
+    } catch (error) {
+
+    }
+  }
+
+
   //#region login_and_register
   logout() {
     localStorage.removeItem(this._key)
