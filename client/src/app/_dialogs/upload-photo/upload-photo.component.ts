@@ -1,5 +1,7 @@
+import { CommonModule } from '@angular/common'
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core'
 import { MatButtonModule } from '@angular/material/button'
+import { fileTypeFromBlob } from "file-type"
 import {
   MatDialogRef,
   MatDialogActions,
@@ -8,7 +10,7 @@ import {
 } from "@angular/material/dialog"
 @Component({
   selector: 'app-upload-photo',
-  imports: [MatDialogContent, MatDialogTitle, MatDialogActions, MatButtonModule],
+  imports: [MatDialogContent, MatDialogTitle, MatDialogActions, MatButtonModule, CommonModule],
   templateUrl: './upload-photo.component.html',
   styleUrl: './upload-photo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,7 +25,24 @@ export class UploadPhotoComponent {
   onSubmit() {
     this.dialogRef.close(this.imgFile)
   }
-  onImgpicked(event: Event) {
-
+  async onImgpicked(event: Event) {
+    this.imgPreview.set(undefined)
+    this.errMessage.set(undefined)
+    this.imgFile = undefined
+    const input = event.target as HTMLInputElement
+    if (input.files && input.files.length > 0) {
+      this.imgFile = input.files[0]
+      const fileType = await fileTypeFromBlob(this.imgFile)
+      if (fileType && this.acceptedImageType.includes(fileType.mime)) {
+        const fileReader = new FileReader()
+        fileReader.onload = () => {
+          this.imgPreview.set(fileReader.result as string)
+        }
+        fileReader.readAsDataURL(this.imgFile)
+      } else {
+        this.imgFile = undefined
+        this.errMessage.set('Image file must be .jpg or .png 🥵')
+      }
+    }
   }
 }

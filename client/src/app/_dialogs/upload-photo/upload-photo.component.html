@@ -1,5 +1,22 @@
 <h3 mat-dialog-title>Upload Photo</h3>
 <mat-dialog-content>
-  <input type="file" />
-  <mat-dialog-actions> </mat-dialog-actions>
+  <div class="container">
+    <div class="img-preview" *ngIf="imgPreview()">
+      <img [src]="imgPreview()" alt="Upload Photo" />
+    </div>
+    <p *ngIf="imgFile">{{ imgFile.name }}</p>
+    <p *ngIf="errMessage()" class="error-message">{{ errMessage() }}</p>
+  </div>
+
+  <input
+    #filePicker
+    type="file"
+    (change)="onImgpicked($event)"
+    accept=".jpg,.png"
+  />
+  <mat-dialog-actions>
+    <button mat-raised-button type="button" (click)="filePicker.click()">
+      Pick Image
+    </button>
+  </mat-dialog-actions>
 </mat-dialog-content>

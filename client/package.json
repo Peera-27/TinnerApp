@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "file-type": "^20.0.0",
     "ng-gallery": "^12.0.0",
     "ngx-spinner": "^17.0.0",
     "ngx-timeago": "^3.0.0",
