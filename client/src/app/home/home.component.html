@@ -1,5 +1,9 @@
 @if (!user()) {
-<p>home works!</p>
+<div class="container">
+  <h1 class="welcome">Welcome To Tinner App</h1>
+  <h3>Come on in to view your match</h3>
+  <p>All you need todo is <a href="/login">Singin or Singup </a></p>
+</div>
 
 } @if (user()) {
 <app-member></app-member>

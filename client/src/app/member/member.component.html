@@ -1,1 +1,5 @@
 <p>member works!</p>
+
+@for (member of paginator().items; track member.id) {
+<p>{{ member.display_name }}</p>
+}
