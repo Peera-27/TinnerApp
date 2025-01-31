@@ -67,10 +67,11 @@
             />
           </mat-label>
         </mat-form-field>
+        <button mat-raised-button type="submit">Search</button>
+        <button mat-raised-button type="submit" (click)="onReset()">
+          Reset
+        </button>
       </form>
-
-      <button mat-raised-button type="submit">Search</button>
-      <button mat-raised-button type="submit" (click)="onReset()">Reset</button>
     </mat-expansion-panel>
   </mat-accordion>
 
