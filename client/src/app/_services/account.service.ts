@@ -33,17 +33,21 @@ export class AccountService {
         })
         user.photos = photos
 
-        const copyData = this.data()
-        if (copyData)
-          copyData.user = user
-        this.data.set(copyData)
-        this.saveDataTolocalStorage()
+        this.setUser(user)
       }
     } catch (error) {
 
     }
   }
 
+
+  private setUser(user: User) {
+    const copyData = this.data()
+    if (copyData)
+      copyData.user = user
+    this.data.set(copyData)
+    this.saveDataTolocalStorage()
+  }
 
   async deletephoto(photo_id: string): Promise<void> {
     const url = environment.baseUrl + 'api/photo/' + photo_id
@@ -55,11 +59,8 @@ export class AccountService {
         const photos = user.photos?.filter(p => p.id !== photo_id)
         user.photos = photos
 
-        const copyData = this.data()
-        if (copyData)
-          copyData.user = user
-        this.data.set(copyData)
-        this.saveDataTolocalStorage()
+        this.setUser(user)
+
       }
     } catch (error) {
 
@@ -145,11 +146,8 @@ export class AccountService {
         if (!user.photos)
           user.photos = []
         user.photos.push(photo)
-        const copyData = this.data()
-        if (copyData)
-          copyData.user = user
-        this.data.set(copyData)
-        this.saveDataTolocalStorage()
+        this.setUser(user)
+
         return true
       }
     } catch (error) {
@@ -157,5 +155,8 @@ export class AccountService {
     }
     return false
   }
-  //endregion
+  //#endregion
+
+
+
 }

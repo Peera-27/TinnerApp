@@ -1,1 +1,6 @@
+@if (!user()) {
 <p>home works!</p>
+
+} @if (user()) {
+<app-member></app-member>
+}

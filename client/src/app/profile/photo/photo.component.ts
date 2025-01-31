@@ -46,30 +46,3 @@ export class PhotoComponent {
     this.accountService.setAvatar(photo_id)
   }
 }
-
-// export class PhotoComponent {
-//   // intl = inject(TimeagoIntl)
-//   user = input.required<User>()
-
-//   constructor(private intl: TimeagoIntl) {
-//     this.intl.strings = engString
-//     this.intl.changes.next()
-//   }
-
-//   private accountService = inject(AccountService)
-//   private dialog = inject(MatDialog)
-
-//   setAvatar(photo_id: string) {
-//   }
-
-//   openAddPhotoDialog() {
-//     const ref = this.dialog.open(UploadPhotoComponent)
-//     ref.afterClosed().subscribe(async file => {
-//       await this.accountService.uploadPhoto(file)
-//     })
-//   }
-
-//   deletePhoto(photo_id: string) {
-
-//   }
-// }
