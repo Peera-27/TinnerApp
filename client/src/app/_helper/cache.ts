@@ -17,9 +17,9 @@ export const cacheManager = {
     },
 
     save: function (key: string, value: cacheValue, opt: cacheOpt) {
-        if (opt === 'chat') {
-            value.items = value.items.map(u => pareUserPhoto(u))
-        }
+        // if (opt === 'chat') 
+        value.items = value.items.map(u => pareUserPhoto(u))
+
         data.set(opt + key, value)
     },
 

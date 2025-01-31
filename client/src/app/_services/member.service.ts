@@ -7,7 +7,7 @@ import { Paginator, UserQueryPagination, default_paginator } from '../_models/pa
 import { pareQuery } from '../_helper/helper'
 
 
-type dataCategory = 'member' | 'chat' | 'follower' | 'following'
+type dataCategory = 'member' | 'follower' | 'following'
 @Injectable({
   providedIn: 'root'
 })
@@ -15,11 +15,12 @@ export class MemberService {
   private http = inject(HttpClient)
   private url = environment.baseUrl + 'api/' //user
 
+
   paginator = signal<Paginator<UserQueryPagination, User>>(default_paginator)
 
   private getData(category: dataCategory) {
     const pagination = this.paginator().pagination
-
+    //get
     let key = cacheManager.createKey(pagination)
     const cachData = cacheManager.load(key, category)
     if (cachData) {

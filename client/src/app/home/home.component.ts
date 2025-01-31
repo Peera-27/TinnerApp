@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http'
 import { Component, computed, Inject, inject, Signal } from '@angular/core'
-import { environment } from '../../environments/environment'
 import { AccountService } from '../_services/account.service'
 import { User } from '../_models/user'
 import { MemberComponent } from "../member/member.component"
