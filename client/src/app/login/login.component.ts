@@ -43,7 +43,7 @@ export class LoginComponent {
 
   constructor() {
     this.form = new FormGroup({
-      username: new FormControl(null, [Validators.required, Validators.minLength(6), Validators.maxLength(16)]),
+      username: new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(16)]),
       password: new FormControl(null, [Validators.required, PasswordValidator(8, 16)]),
     })
   }
@@ -92,7 +92,7 @@ export class LoginComponent {
         if (control.hasError('required'))
           this.errorMessages.username.set('นิ่งไว้วววววว ผมเคยเล่นเกมนี้มาก่อน')
         else if (control.hasError('minlength'))
-          this.errorMessages.username.set(' Must Be at least 6 Char🤯')
+          this.errorMessages.username.set(' Must Be at least 3 Char🤯')
         else if (control.hasError('maxlength'))
           this.errorMessages.username.set(' Must Be at least 16 Char or fewer🤯')
         else

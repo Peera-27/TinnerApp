@@ -19,7 +19,7 @@ export const default_paginator = {
     pagination: {
         pageSize: 5,
         currentPage: 1,
-        length: 1000,
+        length: 1,
     },
     items: []
 

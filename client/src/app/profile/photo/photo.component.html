@@ -1,15 +1,16 @@
 <div class="photo-container">
   <div class="upload-photo">
     <button mat-raised-button (click)="openAddphotoDialog()">
-      <mat-icon>add</mat-icon>New Photo
+      <mat-icon>add</mat-icon> New Photo
     </button>
   </div>
-  @for(photo of user().photos; track photo.id){
 
+  @for(photo of user().photos; track photo.id) {
   <mat-card class="example-card" appearance="outlined">
     <mat-card-header>
       <p>{{ photo.create_at | timeago : true }}</p>
     </mat-card-header>
+
     <img
       mat-card-image
       src="{{ photo.url }}"
@@ -17,21 +18,18 @@
       class="img-thumb"
     />
 
-    <mat-card-actions align="end">
-      <p *ngIf="photo.is_avatar" class="avatar">
-        <mat-icon>verified</mat-icon>Avatar
-      </p>
-      @if (photo.is_avatar === false) {
-
+    <mat-card-actions>
+      @if (photo.is_avatar) {
+      <p class="avatar"><mat-icon>verified</mat-icon> Avatar</p>
+      } @else {
       <button class="set-avatar" mat-button (click)="setAvatar(photo.id)">
         Set as Avatar
       </button>
-      <button class="delete-photo" (click)="deletePhoto(photo.id)">
+      <button class="delete-photo" mat-button (click)="deletePhoto(photo.id)">
         DELETE
       </button>
       }
     </mat-card-actions>
   </mat-card>
-
   }
 </div>
