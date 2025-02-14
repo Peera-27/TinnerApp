@@ -24,6 +24,14 @@ export const routes: Routes = [
             {
                 path: 'profile',
                 loadComponent: () => import('./profile/profile.component').then(c => c.ProfileComponent)
+            },
+            {
+                path: 'followers',
+                loadComponent: () => import('./followers/followers.component').then(c => c.FollowersComponent)
+            },
+            {
+                path: 'followings',
+                loadComponent: () => import('./followings/followings.component').then(c => c.FollowingsComponent)
             }
         ]
     },

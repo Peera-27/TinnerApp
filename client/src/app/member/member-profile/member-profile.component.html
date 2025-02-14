@@ -1,1 +1,51 @@
-<p>member-profile works!</p>
+@if(member){
+<mat-drawer-container class="drawer-container" autosize>
+
+    <div class="side-sidenav-content content">
+        <mat-card-header>
+            <mat-card-title>{{member.display_name+'  '+member.username}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="left">
+                <img class="img-thumb" mat-card-image src="{{member.avatar}}" alt="photo of member">
+                <mat-card-actions align="end">
+
+                    <button mat-button (click)="photo.toggle()">
+                        <mat-icon>image</mat-icon>
+                    </button>
+                </mat-card-actions>
+            </div>
+            <div class="rigt">
+                <div>
+                    <strong>Introduction</strong>
+                    <p>{{member.introduction}}</p>
+                </div>
+                <div>
+                    <strong>Interest</strong>
+                    <p>{{member.interest || 'N/A'}}</p>
+                </div>
+                <p><strong>Looking For :</strong>{{member.looking_for || 'N/A'}}</p>
+                <p><strong>Gender :</strong>{{member.gender || 'N/A'}}</p>
+                <p><strong>Age :</strong>{{member.age || 'N/A'}}</p>
+                <p><strong>Location :</strong>{{member.location || 'N/A'}}</p>
+                <p><strong>Last Active :</strong>{{member.last_active || 'N/A'}}</p>
+                <p><strong>Member Since :</strong>{{member.created_at || 'N/A'}}</p>
+
+            </div>
+        </mat-card-content>
+    </div>
+    <mat-drawer #photo class="sidenav" mode="over" position="end">
+        <p>Photos</p>
+        @if(photo.opened){
+        <gallery class="gallery" [items]="images"></gallery>
+        }
+        <button mat-button (click)="photo.toggle()">
+            <mat-icon>
+                swipe_right
+            </mat-icon>
+            Back to Profile
+        </button>
+    </mat-drawer>
+</mat-drawer-container>
+
+}

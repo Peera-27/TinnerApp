@@ -10,13 +10,13 @@ export const UserController = new Elysia({
     .use(UserDto)
     .use(AuthMiddleWare)
 
-    .get('/username', ({ query: { username } }) => {
+    .get('/:username', ({ params: { username } }) => {
         return UserService.getByuserName(username)
     }, {
         detail: { summary: "Get User By Username" },
-        query: t.Object({
-            username: t.String()
-        }),
+        // query: t.Object({
+        //     username: t.String()
+        // }),
         response: "user",
         isSignIn: true
 
