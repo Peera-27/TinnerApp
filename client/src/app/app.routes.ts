@@ -18,6 +18,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./member/member.component').then(c => c.MemberComponent)
             },
             {
+                path: 'members-profile/:username',
+                loadComponent: () => import('./member/member-profile/member-profile.component').then(c => c.MemberProfileComponent)
+            },
+            {
                 path: 'profile',
                 loadComponent: () => import('./profile/profile.component').then(c => c.ProfileComponent)
             }

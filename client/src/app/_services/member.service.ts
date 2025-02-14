@@ -4,7 +4,8 @@ import { environment } from '../../environments/environment'
 import { User } from '../_models/user'
 import { cacheManager } from '../_helper/cache'
 import { Paginator, UserQueryPagination, default_paginator } from '../_models/pagination'
-import { pareQuery } from '../_helper/helper'
+import { pareQuery, pareUserPhoto } from '../_helper/helper'
+import { firstValueFrom } from 'rxjs'
 
 
 type dataCategory = 'member' | 'follower' | 'following'
@@ -43,6 +44,22 @@ export class MemberService {
   getMembers() {
     this.getData('member')
   }
+  async getMemverByusername(username: string): Promise<User | undefined> {
+    const member = this.paginator().items.find(obj => obj.username === username)
+    if (member) {
+      console.log('gay form cache')
+      return member
+    } else {
+      console.log('get from api')
+      try {
+        const url = this.url + 'user/username/?username=' + username
+        const _member = await firstValueFrom(this.http.get<User>(url))
+        return pareUserPhoto(_member)
+      } catch (error) {
+        console.error('Someting Nigga member 🙎🏿‍♂️ : ', error)
+      }
+    }
+    return undefined
+  }
 }
-
 

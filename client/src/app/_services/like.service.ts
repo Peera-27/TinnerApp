@@ -21,9 +21,10 @@ export class LikeService {
     const following = (user.following as string[])
     return following.includes(id)
   }
-  toggleLike(target_id: string) {
+
+  toggleLike(target_id: string): boolean {
     const user = this.user()
-    if (!user) return
+    if (!user) return false
     const url = this.baseurl
     this._http.put(url, { target_id }).subscribe()
     const following = (user.following as string[])
@@ -39,6 +40,6 @@ export class LikeService {
 
     }
     this.accountservice._setuser(user)
-
+    return user.following.includes(target_id)
   }
 }

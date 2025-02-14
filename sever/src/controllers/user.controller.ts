@@ -1,4 +1,4 @@
-import Elysia from "elysia"
+import Elysia, { t } from "elysia"
 import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
 import { UserService } from "../services/user.service"
 import { UserDto } from "../types/user.type"
@@ -9,6 +9,18 @@ export const UserController = new Elysia({
 })
     .use(UserDto)
     .use(AuthMiddleWare)
+
+    .get('/username', ({ query: { username } }) => {
+        return UserService.getByuserName(username)
+    }, {
+        detail: { summary: "Get User By Username" },
+        query: t.Object({
+            username: t.String()
+        }),
+        response: "user",
+        isSignIn: true
+
+    })
     .get('/all', () => {
         return {
             user: [
