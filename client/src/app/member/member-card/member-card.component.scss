@@ -1,0 +1,46 @@
+@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,300..700,0..1,0&icon_names=favorite";
+
+
+.icon {
+    font-family: 'Material Symbols Outlined';
+    // font-weight: 400;
+    font-size: 2em;
+}
+
+.fill {
+    font-variation-settings: 'FILL' 1;
+}
+
+.pulse {
+    animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        font-variation-settings: 'wght' 100, 'FILL' 1;
+    }
+
+    50% {
+        font-variation-settings: 'wght' 700, 'FILL' 1;
+    }
+
+    100% {
+        font-variation-settings: 'wght' 100, 'FILL' 1;
+    }
+}
+
+
+.member-card {
+    margin: 1em;
+
+    .header-image {
+        background-size: cover;
+    }
+
+}
+
+.photoOfTheDay {
+    margin: 1em;
+    max-width: 300px;
+    width: 300px;
+}

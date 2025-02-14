@@ -20,5 +20,6 @@ export class HeaderComponent {
   logout() {
     this.accountService.logout()
     this.rounter.navigate(['/'])
+
   }
 }

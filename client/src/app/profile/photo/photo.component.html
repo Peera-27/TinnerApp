@@ -11,12 +11,7 @@
       <p>{{ photo.create_at | timeago : true }}</p>
     </mat-card-header>
 
-    <img
-      mat-card-image
-      src="{{ photo.url }}"
-      alt="Photo of {{ user().display_name }}"
-      class="img-thumb"
-    />
+    <img mat-card-image src="{{ photo.url }}" alt="Photo of {{ user().display_name }}" class="img-thumb" />
 
     <mat-card-actions>
       @if (photo.is_avatar) {

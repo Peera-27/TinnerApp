@@ -41,30 +41,31 @@ export class MemberComponent implements OnInit {
   onSearch() {
     this.memberservice.getMembers()
   }
-  onReset() {
-    this.paginator.set(default_paginator)
-    this.onSearch()
+  // onReset() {
+  //   this.paginator.set(default_paginator)
+  //   this.onSearch()
 
 
+  // }
+
+
+
+  onReset() {         // onReset ที่ข้อมูลในฟิลหาย
+    const resetPagination: UserQueryPagination = {
+      username: '',
+      looking_for: '',
+      gender: '',
+      min_age: undefined,
+      max_age: undefined,
+      currentPage: 1,
+      pageSize: this.paginator().pagination.pageSize ?? 10,
+      length: 0
+    }
+
+    // อัปเดต paginator ใหม่
+    this.paginator.set({ ...this.paginator(), pagination: resetPagination })
+
+    // บังคับให้ Angular detect การเปลี่ยนแปลง
+    setTimeout(() => this.onSearch(), 0)
   }
 }
-
-
-// onReset() {          onReset ที่ข้อมูลในฟิลหาย
-//   const resetPagination: UserQueryPagination = {
-//     username: '',
-//     looking_for: '',
-//     gender: '',
-//     min_age: undefined,
-//     max_age: undefined,
-//     currentPage: 1,
-//     pageSize: this.paginator().pagination.pageSize ?? 10,
-//     length: 0
-//   }
-
-//   // อัปเดต paginator ใหม่
-//   this.paginator.set({ ...this.paginator(), pagination: resetPagination });
-
-//   // บังคับให้ Angular detect การเปลี่ยนแปลง
-//   setTimeout(() => this.onSearch(), 0);
-// }
