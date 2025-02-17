@@ -5,17 +5,22 @@ mat-toolbar button {
     display: flex;
     cursor: pointer;
     background: none;
+    font-family: 'HYWenHei 85W';
+
 }
 
 mat-toolbar button.active:not(.home-button) {
-    color: aqua;
-}
-
-mat-toolbar button.active:not(.home-button) {
+    color: rgb(0, 0, 0);
     border-bottom: 0.15em solid skyblue;
+    font-family: 'HYWenHei 85W';
+
 }
 
 mat-toolbar .home-button {
+    font-family: 'HYWenHei 85W';
     font-size: xx-large;
-    color: cadetblue;
+    background: linear-gradient(45deg, rgb(125, 0, 250), rgb(255, 30, 244));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
 }

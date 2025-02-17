@@ -6,19 +6,20 @@
   @if(user()===undefined){
   <span class="my-spacer"></span>
   <button routerLink="/login" routerLinkActive="active">
-    <mat-icon>login</mat-icon>
+    <mat-icon>login </mat-icon>
     <span> Login</span>
   </button>
   } @if(user()){
   <button routerLink="/followers" routerLinkActive="active">
     <span> Follower</span>
   </button>
-  <button>
-    <span routerLink="/followings" routerLinkActive="active"> Following</span>
+  <button routerLink="/followings" routerLinkActive="active">
+    <span> Following</span>
   </button>
 
   <span class="my-spacer"></span>
   <button mat-button [matMenuTriggerFor]="menu">
+
     {{ user()?.display_name }}
   </button>
   <mat-menu #menu="matMenu">

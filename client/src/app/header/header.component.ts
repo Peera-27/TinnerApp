@@ -6,14 +6,16 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router'
 import { AccountService } from '../_services/account.service'
 import { User } from '../_models/user'
 import { MatMenuModule } from '@angular/material/menu'
+import { MatCardModule } from '@angular/material/card'
 
 @Component({
   selector: 'app-header',
-  imports: [MatMenuModule, MatToolbarModule, MatButtonModule, MatIconModule, RouterLink, RouterLinkActive],
+  imports: [MatMenuModule, MatToolbarModule, MatButtonModule, MatIconModule, RouterLink, RouterLinkActive, MatCardModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+
   private accountService = inject(AccountService)
   private rounter = inject(Router)
   user = computed(() => this.accountService.data()?.user)
