@@ -10,6 +10,7 @@ import { PhotoController } from "./controllers/photo.controller"
 import { UserController } from "./controllers/user.controller"
 import { mongodb } from "./configs/database.config"
 import { ErrorController } from "./controllers/error.controller"
+import { MessageController } from "./controllers/message.controller"
 
 mongodb.connect()
 
@@ -25,6 +26,7 @@ const app = new Elysia()
   .use(UserController)
   .use(LikeController)
   .use(PhotoController)
+  .use(MessageController)
 
   .use(staticPlugin({
     assets: "public/uploads",
