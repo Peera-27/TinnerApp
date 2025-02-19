@@ -1,1 +1,57 @@
-<p>followings works!</p>
+<div class="member-container">
+    <mat-accordion>
+        <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title> Search </mat-panel-title>
+                <!-- <mat-panel-description> This is a summary of the content </mat-panel-description> -->
+            </mat-expansion-panel-header>
+            <form (ngSubmit)="onSearch()" #ngForm autocomplete="off">
+                <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <input matInput type="text" name="username" [(ngModel)]="following().pagination.username" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Looking for</mat-label>
+                    <mat-select [(ngModel)]="following().pagination.looking_for" name="looking_for">
+                        <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
+                        <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
+                        <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Gender</mat-label>
+                    <mat-select [(ngModel)]="following().pagination.gender" name="gender">
+                        <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
+                        <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
+                        <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Min Age</mat-label>
+                    <input matInput type="number" name="min_age" [(ngModel)]="following().pagination.min_age" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Max Age</mat-label>
+                    <input matInput type="number" name="max_age" [(ngModel)]="following().pagination.max_age" />
+                </mat-form-field>
+
+                <button mat-raised-button type="submit">Search</button>
+                <button mat-raised-button type="button" (click)="onReset()">
+                    Reset
+                </button>
+            </form>
+        </mat-expansion-panel>
+    </mat-accordion>
+    <div class="memberlist">
+        @for (member of following().items; track member.id) {
+        <div class="member-itemiv">
+            <app-member-card [member]="member"></app-member-card>
+        </div>
+        }
+    </div>
+
+    <mat-paginator [length]="following().pagination.length" [pageSize]="following().pagination.pageSize"
+        [pageSizeOptions]="pageSize" aria-label="Select page" (page)="onPageChnage($event)"></mat-paginator>
+</div>

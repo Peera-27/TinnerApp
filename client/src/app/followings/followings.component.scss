@@ -2,3 +2,21 @@
     font-family: 'HYWenHei 85W';
 
 }
+
+.member-item {
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    max-width: 350px;
+}
+
+.memberlist {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+* {
+    font-family: 'HYWenHei 85W';
+
+}

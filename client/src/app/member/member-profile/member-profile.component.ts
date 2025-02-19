@@ -31,7 +31,7 @@ export class MemberProfileComponent implements OnInit {
   async getmember() {
     const username = this.activeRoute.snapshot.paramMap.get('username')
     if (!username) return
-    const member = await this.memberService.getMemverByusername(username)
+    const member = await this.memberService.getMemberByusername(username)
     if (!member) {
       this.router.navigate(['404'])
     } else {

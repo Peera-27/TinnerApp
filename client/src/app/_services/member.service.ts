@@ -44,7 +44,7 @@ export class MemberService {
   getMembers() {
     this.getData('member')
   }
-  async getMemverByusername(username: string): Promise<User | undefined> {
+  async getMemberByusername(username: string): Promise<User | undefined> {
     const member = this.paginator().items.find(obj => obj.username === username)
     if (member) {
       console.log('gay form cache')
