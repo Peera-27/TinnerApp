@@ -11,7 +11,10 @@
                 <mat-card-actions align="end">
 
                     <button mat-button (click)="photo.toggle()">
-                        <mat-icon>image</mat-icon>
+                        <mat-icon>image</mat-icon> Photo
+                    </button>
+                    <button mat-button>
+                        <mat-icon>chat</mat-icon>Chat
                     </button>
                 </mat-card-actions>
             </div>
@@ -46,6 +49,17 @@
             Back to Profile
         </button>
     </mat-drawer>
+    <div class="chatter">
+        <p>Caht</p>
+        <div class="chat-container">
+            <div class="cht-title"></div>
+            <ul class="chat" #chat></ul>
+            <div class="input-container">
+                <input type="text
+            "><button type="button">Send</button>
+            </div>
+        </div>
+    </div>
 </mat-drawer-container>
 
 }

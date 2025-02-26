@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment'
 import { Message } from '../_models/message'
 import { default_paginator, Paginator, QueryPagination } from '../_models/pagination'
 import { webSocket, WebSocketSubject } from "rxjs/webSocket"
-import { delay, retry, Subject, timer } from 'rxjs'
+import { delay, firstValueFrom, retry, Subject, timer } from 'rxjs'
 import { cacheManager } from '../_helper/cache'
 import { pareQuery } from '../_helper/helper'
 
@@ -63,7 +63,7 @@ export class MessageService {
   close() {
     this.socket$.complete()
   }
-  getMessageHistory(receiver_id: string) {
+  async getMessageHistory(receiver_id: string) {
     const pagination = this.paginator().pagination
     const key = cacheManager.createKey(pagination)
 
@@ -75,9 +75,11 @@ export class MessageService {
       return
     }
     console.log('get chat history from server')
+
     const url = this.bastUrl + `/${receiver_id}` + pareQuery(pagination)
     try {
-      this.http.get(url)
+      const paginator = await firstValueFrom(this.http.get<Paginator<QueryPagination, Message>>(url))
+      cacheManager.save(key, paginator, 'chat')
     }
     catch (error) {
       console.error(`Error:loading chat history ${error}`)
