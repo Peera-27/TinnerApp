@@ -15,7 +15,7 @@
     </div>
   </header>
 
-  <mat-tab-group animationDuration="220ms">
+  <mat-tab-group animationDuration="220ms" [mat-stretch-tabs]="false">
     <mat-tab label="Profile">
       <form (ngSubmit)="onSubmit()" #form="ngForm" autocomplete="off" class="form">
         <section class="card">

@@ -62,3 +62,43 @@ src/
 
 `followers` / `following` used to be ObjectId arrays on the user document; they
 are now rows in the `follows` table (`follower_id` follows `following_id`).
+
+## Deploying
+
+The whole app ships as **one container on one origin**: the Angular build is
+copied into the image and served by this same process, so there is no CORS and
+the chat websocket connects back to the host the page came from — which is what
+the production `environment.ts` expects.
+
+```
+docker build -t tinnerapp .        # from the repo root, not sever/
+docker run -p 8000:8000 --env-file sever/.env tinnerapp
+```
+
+On Render, `render.yaml` describes the service; point a Blueprint at the repo and
+fill in the values marked `sync: false`. Migrations run from the container's start
+command, so a bad migration fails the deploy instead of booting on a stale schema.
+
+### One instance. Not two.
+
+Chat rooms, hub sockets and presence all live in this process's memory
+(`message.controller.ts`, `hub.service.ts`, `presence.service.ts`). A second
+instance does not share any of it, so users would be split into halves that
+cannot see each other's messages — and the failure only shows up under load.
+Moving that state into Postgres or Redis is a prerequisite for scaling out.
+
+### Environment in production
+
+| variable | notes |
+|---|---|
+| `DATABASE_URL` | Supabase **Session pooler** string (port 5432) |
+| `JWT_SECRET` | no fallback — the server refuses to boot without it |
+| `APP_URL` | public base URL, used in password-reset mail |
+| `CLOUDINARY_*` | name, api key, api secret |
+| `PORT` | set by the platform |
+| `CLIENT_DIST` | where the Angular build was copied; the image sets it |
+
+Leave **`MODE`** unset: `tls.config.ts` then falls back to `production` and skips
+the local dev certificates, letting the platform terminate TLS. Leave
+**`MAIL_PROVIDER`** unset until a sender is implemented — `mailer.service.ts`
+prints mail to the log instead of failing.

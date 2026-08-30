@@ -218,3 +218,31 @@
         height: 18px;
     }
 }
+
+/* ------------------------------------------------------------------------
+   A profile form is reading-and-typing, not a dashboard: full-bleed 1200px
+   inputs are hard to scan and look broken next to the narrow labels. Hold the
+   whole form to a comfortable measure instead.
+   ------------------------------------------------------------------------ */
+.tn-page {
+    max-width: 880px;
+}
+
+/* The bar only earns its weight once there is something to say or do in it. */
+.actionbar {
+    justify-content: flex-end;
+    background: transparent;
+    backdrop-filter: none;
+    border: 0;
+    box-shadow: none;
+    padding: 4px 0 0;
+}
+
+.actionbar:has(.saved),
+.actionbar:has(.unsaved) {
+    padding: 14px 18px;
+    background: color-mix(in srgb, var(--tn-surface) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-3);
+}

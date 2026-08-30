@@ -1,0 +1,54 @@
+services:
+  - type: web
+    name: tinnerapp
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    # closest Render region to Thailand; the Supabase project is in ap-northeast-1
+    # (Tokyo), so expect a little cross-region latency on every query
+    region: singapore
+    healthCheckPath: /health
+
+    # DO NOT SCALE THIS PAST ONE INSTANCE.
+    # The chat rooms, hub sockets and presence table all live in this process's
+    # memory (message.controller.ts, hub.service.ts, presence.service.ts), so a
+    # second instance would silently split users into separate, invisible halves.
+    # Moving past one instance means moving that state into Postgres or Redis first.
+
+    envVars:
+      # paste the Supabase "Session pooler" string (port 5432)
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_POOL_MAX
+        value: "10"
+      # generated once by Render and then kept; changing it logs everyone out
+      - key: JWT_SECRET
+        generateValue: true
+      # used to build the links inside password-reset mail
+      - key: APP_URL
+        sync: false
+      - key: CLOUDINARY_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # Password recovery only works once these three are set. Leave them out and
+      # the reset mail is written to the Render log instead of anyone's inbox,
+      # while the app still tells the user to check their email — so the account
+      # is effectively unrecoverable.
+      - key: MAIL_PROVIDER
+        value: resend
+      - key: RESEND_API_KEY
+        sync: false
+      # Currently the sandbox sender: onboarding@resend.dev needs no domain, but
+      # Resend will only deliver it to the address that owns the Resend account,
+      # and answers 403 for anyone else. So password recovery works for that one
+      # address and silently does not for every other user — which is the whole
+      # reason to move to a verified domain (Tinner <no-reply@yourdomain.com>)
+      # before anyone but you signs up.
+      - key: MAIL_FROM
+        sync: false
+      # MODE is intentionally absent -> tls.config.ts falls back to 'production'
+      # and skips the local dev certificates; Render terminates TLS itself.

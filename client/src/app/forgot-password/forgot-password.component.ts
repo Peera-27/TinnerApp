@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core'
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatIconModule } from '@angular/material/icon'
@@ -17,6 +17,15 @@ export class ForgotPasswordComponent {
   private accountService = inject(AccountService)
 
   email = new FormControl('', [Validators.required, Validators.email])
+  /**
+   * The control has to hang off a FormGroup bound to the <form> element. Without
+   * it no Angular directive owns the form, `(ngSubmit)` is a listener for an
+   * event that is never raised, and the submit button falls through to a native
+   * browser submit — which reloads the page and never calls `onSubmit`. That is
+   * what it did: the screen looked the same, the field cleared itself, and no
+   * request was ever sent.
+   */
+  form = new FormGroup({ email: this.email })
   submitting = signal(false)
   sent = signal(false)
 

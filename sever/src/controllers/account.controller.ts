@@ -1,7 +1,7 @@
 import Elysia from "elysia"
 import { jwtConfig } from "../configs/jwt.config"
 import { clientIp, createRateLimiter } from "../helper/rate-limit.helper"
-import { isValidPassword, isValidUsername } from "../helper/validation.helper"
+import { isValidPassword, isValidUsername, PASSWORD_REQUIREMENTS, USERNAME_REQUIREMENTS } from "../helper/validation.helper"
 import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
 import { AccountService } from "../services/account.service"
 import { PasswordService } from "../services/password.service"
@@ -14,8 +14,14 @@ import { AccountDto } from "../types/account.types"
  * and a single account cannot be hammered from a botnet either.
  */
 const loginLimiter = createRateLimiter(10, 5 * 60_000)
-/** Registration is rarer still — this only stops bulk account creation. */
-const registerLimiter = createRateLimiter(5, 60 * 60_000)
+/**
+ * Registration is rarer still — this only stops bulk account creation.
+ * Kept at 15/hour rather than a tighter number because a single IP is often a
+ * whole office or a mobile carrier's NAT: the sixth genuine person behind it
+ * should not be turned away. Anyone bulk-creating accounts rotates IPs anyway,
+ * so a stricter limit mostly costs real users.
+ */
+const registerLimiter = createRateLimiter(15, 60 * 60_000)
 /** Reset mails go to somebody's inbox, so the limit is per IP and strict. */
 const resetLimiter = createRateLimiter(5, 60 * 60_000)
 
@@ -85,9 +91,16 @@ export const AccountController = new Elysia({
                 throw new Error(`สมัครถี่เกินไป รอ ${limit.retry_after} วินาทีแล้วลองใหม่`)
             }
 
-            if (!isValidUsername(username) || !isValidPassword(password)) {
+            // Say which field is wrong and why. This is the user's own input on
+            // the way in, not an existence check, so there is nothing to leak —
+            // and a generic rejection here just leaves the form guessing.
+            if (!isValidUsername(username)) {
                 set.status = "Bad Request"
-                throw new Error(`Invalid username or password`)
+                throw new Error(USERNAME_REQUIREMENTS)
+            }
+            if (!isValidPassword(password)) {
+                set.status = "Bad Request"
+                throw new Error(PASSWORD_REQUIREMENTS)
             }
         },
     })

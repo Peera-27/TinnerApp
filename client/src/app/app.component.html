@@ -6,7 +6,9 @@
   </main>
 </div>
 
-<ngx-spinner>
+<!-- type only silences the library warning; the visible loader is the projected
+     .tn-loader below, and the built-in animation CSS is deliberately not loaded -->
+<ngx-spinner type="ball-atom">
   <div class="tn-loader">
     <div class="tn-loader__heart"></div>
     <p class="tn-loader__text">finding your people</p>

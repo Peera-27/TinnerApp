@@ -1,7 +1,7 @@
 import { and, eq, isNull } from "drizzle-orm"
 import { db } from "../db"
 import { password_resets, users } from "../db/schema"
-import { isValidPassword } from "../helper/validation.helper"
+import { isValidPassword, PASSWORD_REQUIREMENTS } from "../helper/validation.helper"
 import { MailerService } from "./mailer.service"
 import { TokenService, hashToken, newToken } from "./token.service"
 
@@ -38,26 +38,36 @@ export const PasswordService = {
             expires_at: new Date(Date.now() + RESET_TTL_MS),
         })
 
-        await MailerService.send(
-            user.email,
-            "Reset your Tinner password",
-            [
-                `Hi ${user.display_name ?? "there"},`,
-                "",
-                "Someone asked to reset the password on your Tinner account.",
-                "If that was you, open the link below within the next hour:",
-                "",
-                resetLink(token),
-                "",
-                "If it was not you, you can ignore this message — nothing has changed.",
-            ].join("\n"),
-        )
+        // A provider that is down, or a key that is wrong, must not change the
+        // answer this endpoint gives. Letting the error out would turn an
+        // unregistered address into a 204 and a registered one into a 500 —
+        // exactly the difference the uniform reply is here to hide. The row is
+        // already written, so the link itself stays valid; what was lost is the
+        // delivery, and that is the operator's to see in the log.
+        try {
+            await MailerService.send(
+                user.email,
+                "Reset your Tinner password",
+                [
+                    `Hi ${user.display_name ?? "there"},`,
+                    "",
+                    "Someone asked to reset the password on your Tinner account.",
+                    "If that was you, open the link below within the next hour:",
+                    "",
+                    resetLink(token),
+                    "",
+                    "If it was not you, you can ignore this message — nothing has changed.",
+                ].join("\n"),
+            )
+        } catch (error) {
+            console.error("password reset mail failed to send", error)
+        }
     },
 
     /** Spends a reset link. Every existing session is ended along with it. */
     reset: async function (token: string, password: string): Promise<void> {
         if (!isValidPassword(password))
-            throw new Error("Password does not meet the requirements")
+            throw new Error(PASSWORD_REQUIREMENTS)
 
         const row = await db.query.password_resets.findFirst({
             where: eq(password_resets.token_hash, hashToken(token)),
@@ -80,7 +90,7 @@ export const PasswordService = {
     /** Changing the password while signed in — the current one is required. */
     change: async function (user_id: string, current: string, next: string): Promise<void> {
         if (!isValidPassword(next))
-            throw new Error("Password does not meet the requirements")
+            throw new Error(PASSWORD_REQUIREMENTS)
 
         const user = await db.query.users.findFirst({
             where: eq(users.id, user_id),

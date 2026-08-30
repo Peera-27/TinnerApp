@@ -63,11 +63,16 @@ export const PhotoController = new Elysia({
             set.status = "Bad Request"
             if (error instanceof Error)
                 throw error
+
+            // Cloudinary rejects with a plain `{ message, name, http_code }`
+            // object, not an Error, so it lands here — and replacing it with a
+            // generic message left a misconfigured cloud_name looking exactly
+            // like a bad upload, with nothing written down anywhere. Log the
+            // cause; the client still gets the generic text, since a config
+            // fault is not something the user can act on.
+            console.error("photo upload failed", error)
             throw new Error("Something went wrong , try again later!!")
         }
-
-
-
     }, {
         detail: { summary: "Upload Photo" },
         body: "upload",

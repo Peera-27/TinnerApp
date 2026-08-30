@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { AccountService } from '../_services/account.service'
 import { User } from '../_models/user'
 import { PhotoComponent } from './photo/photo.component'
+import { PASSWORD_RULES } from '../_validator/account.rules'
 import { DEFAULT_AVATAR } from '../_helper/helper'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Router } from '@angular/router'
@@ -26,7 +27,12 @@ export class ProfileComponent {
   private accountService = inject(AccountService)
   private snackbar = inject(MatSnackBar)
   private router = inject(Router)
-  user: User
+  /** Read through the signal rather than captured once. `setUser` hands back a
+   *  fresh User object now, so a snapshot taken in the constructor would stop
+   *  reflecting anything after the first photo or profile change. */
+  get user(): User {
+    return this.accountService.data()?.user as User
+  }
   @ViewChild('form') form?: NgForm
 
   readonly saved = signal(false)
@@ -56,21 +62,12 @@ export class ProfileComponent {
   readonly changingPassword = signal(false)
   readonly passwordError = signal('')
 
-  readonly passwordRules = [
-    { label: '8–16 characters', test: (v: string) => v.length >= 8 && v.length <= 16 },
-    { label: 'A lowercase letter', test: (v: string) => /[a-z]/.test(v) },
-    { label: 'An uppercase letter', test: (v: string) => /[A-Z]/.test(v) },
-    { label: 'A number', test: (v: string) => /[0-9]/.test(v) },
-    { label: 'A symbol (! @ # & * …)', test: (v: string) => /[^A-Za-z0-9\s]/.test(v) }
-  ]
+  readonly passwordRules = PASSWORD_RULES
 
   constructor() {
-    this.user = this.accountService.data()!.user
     // the stored session may predate the email column, and a listing never
     // carries it — so the field is filled from /me rather than from cache
-    this.accountService.loadMe().then(() => {
-      this.user = this.accountService.data()?.user ?? this.user
-    })
+    this.accountService.loadMe()
   }
 
   get avatar(): string {

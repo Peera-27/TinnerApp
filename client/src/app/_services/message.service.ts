@@ -25,10 +25,10 @@ export class MessageService {
   private messageSubject = new Subject<Message>()
   message$ = this.messageSubject.asObservable()
   constructor() {
-    const protocal = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    this.wsUrl = environment.production
-      ? `${protocal}//${window.location.host}${environment.wsUrl}`
-      : environment.wsUrl
+    // dev goes through the dev-server proxy and prod is served by the API
+    // itself, so in both cases the socket lives on the current origin
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    this.wsUrl = `${protocol}//${window.location.host}${environment.wsUrl}`
   }
   connect(receiver_id: string, token: string, user_id: string): void {
     const RECONNECT_INTERVAL = 5000

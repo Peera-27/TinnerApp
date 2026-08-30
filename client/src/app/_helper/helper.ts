@@ -6,7 +6,9 @@ import { User } from "../_models/user"
 export const DEFAULT_AVATAR = '/assets/default-avatar.svg'
 export const DEFAULT_PHOTO = '/assets/default-photo.svg'
 
-function getAvatar(user: User): string {
+/** Which photo the avatar renders from. Exported so setting or deleting a
+ *  photo can refresh `user.avatar` without re-rolling `photoOfTheDay`. */
+export function getAvatar(user: User): string {
     if (user.photos) {
         const avatar = user.photos.find(p => p.is_avatar === true)
         if (avatar)
@@ -81,4 +83,25 @@ export function timeAgo(value?: Date | string): string {
     if (days < 7) return `${days}d`
 
     return new Date(value).toLocaleDateString()
+}
+
+/**
+ * Angular leaves an untouched control as `null`, but the API's optional fields
+ * are `t.Optional(...)` — they accept a value or no key at all, and reject
+ * `null` with a 422. Dropping the empties turns "the user skipped this" into
+ * "absent", which is what the server actually expects.
+ *
+ * `dropBlank` also treats '' as absent. Use it for register, where a blank
+ * email would otherwise be stored as an empty string — and `email` is uniquely
+ * indexed, so the second blank one would collide. Leave it off for profile
+ * edits, where '' is how someone clears a field they had filled in before.
+ */
+export function compact<T extends object>(body: T, dropBlank = false): Partial<T> {
+    const out: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(body)) {
+        if (value === null || value === undefined) continue
+        if (dropBlank && value === '') continue
+        out[key] = value
+    }
+    return out as Partial<T>
 }

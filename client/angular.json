@@ -68,6 +68,7 @@
         },
         "serve": {
           "options": {
+            "proxyConfig": "proxy.conf.json",
             "ssl": false,
             "sslCert": "../ssl/localhost.pem",
             "sslKey": "../ssl/localhost-key.pem"

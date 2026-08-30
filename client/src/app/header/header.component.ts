@@ -47,18 +47,19 @@ export class HeaderComponent {
   protected readonly timeAgo = timeAgo
 
   /** Full navigation — the desktop bar has room for all of it. */
+  // Four primary destinations, the most a top bar can hold next to a brand,
+  // a bell, a theme switch and an account chip without crowding. Everything
+  // lower-frequency lives in the account menu instead.
   readonly nav = computed<NavItem[]>(() => [
     { label: 'Discover', icon: 'explore', link: '/', exact: true, badge: 0 },
     { label: 'Swipe', icon: 'style', link: '/swipe', exact: false, badge: 0 },
     { label: 'Matches', icon: 'favorite', link: '/matches', exact: false, badge: 0 },
-    { label: 'Messages', icon: 'chat_bubble', link: '/messages', exact: false, badge: this.unread() },
-    { label: 'Followers', icon: 'group', link: '/followers', exact: false, badge: 0 },
-    { label: 'Following', icon: 'volunteer_activism', link: '/followings', exact: false, badge: 0 }
+    { label: 'Messages', icon: 'chat_bubble', link: '/messages', exact: false, badge: this.unread() }
   ])
 
   /** The phone tab bar only fits the four main destinations — Profile is added
    *  by the template, and the follow lists live in the account menu. */
-  readonly tabs = computed<NavItem[]>(() => this.nav().slice(0, 4))
+  readonly tabs = this.nav
 
   constructor() {
     // the badges have to be right the moment the header appears, and again

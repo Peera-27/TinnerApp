@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { PasswordValidator } from '../_validator/password.validator'
+import { PASSWORD_RULES, USERNAME_HINT, usernameValidator } from '../_validator/account.rules'
 import { PasswordMatchValidator } from '../_validator/password.match.validator'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
@@ -50,13 +51,8 @@ export class LoginComponent {
     { value: 'all', label: 'LGBTQ+', icon: 'transgender' }
   ]
 
-  readonly passwordRules = [
-    { label: '8–16 characters', test: (v: string) => v.length >= 8 && v.length <= 16 },
-    { label: 'A lowercase letter', test: (v: string) => /[a-z]/.test(v) },
-    { label: 'An uppercase letter', test: (v: string) => /[A-Z]/.test(v) },
-    { label: 'A number', test: (v: string) => /[0-9]/.test(v) },
-    { label: 'A symbol (! @ # & * …)', test: (v: string) => /[^A-Za-z0-9\s]/.test(v) }
-  ]
+  readonly passwordRules = PASSWORD_RULES
+  readonly usernameHint = USERNAME_HINT
 
   errorMessages = {
     username: signal(''),
@@ -67,7 +63,7 @@ export class LoginComponent {
 
   constructor() {
     this.form = new FormGroup({
-      username: new FormControl(null, [Validators.required, Validators.minLength(3), Validators.maxLength(16)]),
+      username: new FormControl(null, [Validators.required, usernameValidator()]),
       password: new FormControl(null, [Validators.required, PasswordValidator(8, 16)]),
     })
   }
@@ -161,10 +157,14 @@ export class LoginComponent {
       case 'username':
         if (control.hasError('required'))
           this.errorMessages.username.set('Please choose a username')
-        else if (control.hasError('minlength'))
+        else if (control.hasError('usernameTooShort'))
           this.errorMessages.username.set('At least 3 characters')
-        else if (control.hasError('maxlength'))
-          this.errorMessages.username.set('16 characters at most')
+        else if (control.hasError('usernameTooLong'))
+          this.errorMessages.username.set('20 characters at most')
+        else if (control.hasError('usernameStart'))
+          this.errorMessages.username.set('Must start with a letter')
+        else if (control.hasError('usernameCharset'))
+          this.errorMessages.username.set('Letters, numbers and _ only')
         else
           this.errorMessages.username.set('')
         break

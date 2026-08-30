@@ -403,3 +403,38 @@
     color: var(--tn-brand-1);
     font-variation-settings: 'FILL' 1;
 }
+
+/* ------------------------------------------------------------------------
+   Mid-width safety net. Between the phone breakpoint and a roomy desktop the
+   bar has to hold brand + four pills + bell + theme + account chip, which is
+   where it used to run out of room and squash together.
+   ------------------------------------------------------------------------ */
+@media (max-width: 1180px) {
+
+    /* labels drop away, icons keep the pills tappable and legible */
+    .nav__link>span:not(.nav__icon) {
+        display: none;
+    }
+
+    .nav__link {
+        padding: 8px 12px;
+    }
+
+    .nav {
+        margin-left: 10px;
+    }
+
+    .account__name {
+        max-width: 84px;
+    }
+}
+
+@media (max-width: 980px) {
+    .account__name {
+        display: none;
+    }
+
+    .account__caret {
+        display: none;
+    }
+}

@@ -10,7 +10,7 @@ import { photo } from "../types/photo.type"
 export const PhotoService = {
     upload: async function (file: File, user_id: string): Promise<photo> {
         const buffer = await file.arrayBuffer()
-        const isFileValid = ImageHelper.isImage(buffer)
+        const isFileValid = await ImageHelper.isImage(buffer)
         if (!isFileValid)
             throw new Error("Image must be .jpeg or .png")
 

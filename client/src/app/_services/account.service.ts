@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment'
 import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http'
 import { User } from '../_models/user'
 import { firstValueFrom } from 'rxjs'
-import { pareUserPhoto } from '../_helper/helper'
+import { compact, getAvatar, pareUserPhoto } from '../_helper/helper'
 import { Photo } from '../_models/photo'
 import { cacheManager } from '../_helper/cache'
 
@@ -46,6 +46,10 @@ export class AccountService {
           return p
         })
         user.photos = photos
+        // every template renders `user.avatar`, not the flags — flipping
+        // is_avatar alone left the header and profile on the old photo until
+        // the next login recomputed it
+        user.avatar = getAvatar(user)
 
         this.setUser(user)
       }
@@ -58,10 +62,13 @@ export class AccountService {
     this.setUser(user)
   }
   private setUser(user: User) {
-    const copyData = this.data()
-    if (copyData)
-      copyData.user = user
-    this.data.set(copyData)
+    const current = this.data()
+    // Both wrappers have to be new objects. A signal compares with Object.is,
+    // so mutating the stored session in place notified nobody — and a
+    // computed() is memoised on its own result too, so handing back the same
+    // User reference left `computed(() => data()?.user)` looking unchanged and
+    // its dependents, the header avatar among them, never re-ran.
+    this.data.set(current ? { ...current, user: { ...user } } : current)
     this.saveDataTolocalStorage()
   }
 
@@ -74,6 +81,9 @@ export class AccountService {
       if (user) {
         const photos = user.photos?.filter(p => p.id !== photo_id)
         user.photos = photos
+        // deleting the current avatar otherwise left `avatar` pointing at a
+        // URL Cloudinary no longer serves
+        user.avatar = getAvatar(user)
 
         this.setUser(user)
 
@@ -116,7 +126,7 @@ export class AccountService {
   async register(registerdata: User): Promise<string> {
     try {
       const url = this._baseApiurl + 'register'
-      const response = this._http.post<Session>(url, registerdata, { context: skipAuthRefresh() })
+      const response = this._http.post<Session>(url, compact(registerdata, true), { context: skipAuthRefresh() })
       const data = await firstValueFrom(response)
       data.user = pareUserPhoto(data.user)
       this.data.set(data)
@@ -213,15 +223,15 @@ export class AccountService {
   async updateProfile(user: User): Promise<boolean> {
     const url = environment.baseUrl + 'api/user/'
     try {
-      const response = this._http.patch(url, user)
+      const response = this._http.patch(url, compact(user))
       await firstValueFrom(response)
       const currentUserdata = this.data()
       if (currentUserdata) {
         // merge, never replace: the form only carries the editable fields, so
-        // assigning it wholesale would drop id, photos, following and avatar
-        currentUserdata.user = { ...currentUserdata.user, ...user }
-        this.data.set(currentUserdata)
-        this.saveDataTolocalStorage()
+        // assigning it wholesale would drop id, photos, following and avatar.
+        // Routed through setUser so the change actually reaches the header —
+        // setting the mutated session back onto the signal notified nobody.
+        this.setUser({ ...currentUserdata.user, ...user })
       }
     } catch (error) {
       return false
@@ -247,7 +257,9 @@ export class AccountService {
         return true
       }
     } catch (error) {
-
+      // the error interceptor has already shown the snackbar; swallowing this
+      // silently as well left an upload failing with no trace anywhere
+      console.error('photo upload failed', error)
     }
     return false
   }

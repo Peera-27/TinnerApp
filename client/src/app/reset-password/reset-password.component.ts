@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input'
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'
 import { PasswordMatchValidator } from '../_validator/password.match.validator'
 import { PasswordValidator } from '../_validator/password.validator'
+import { PASSWORD_RULES } from '../_validator/account.rules'
 import { AccountService } from '../_services/account.service'
 
 @Component({
@@ -34,13 +35,7 @@ export class ResetPasswordComponent {
   serverError = signal('')
   done = signal(false)
 
-  readonly rules = [
-    { label: '8–16 characters', test: (v: string) => v.length >= 8 && v.length <= 16 },
-    { label: 'A lowercase letter', test: (v: string) => /[a-z]/.test(v) },
-    { label: 'An uppercase letter', test: (v: string) => /[A-Z]/.test(v) },
-    { label: 'A number', test: (v: string) => /[0-9]/.test(v) },
-    { label: 'A symbol (! @ # & * …)', test: (v: string) => /[^A-Za-z0-9\s]/.test(v) }
-  ]
+  readonly rules = PASSWORD_RULES
 
   get passwordValue(): string {
     return this.form.controls.password.value ?? ''

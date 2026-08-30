@@ -1,7 +1,10 @@
 export const environment = {
     production: false,
-    // ng serve runs on :4200, the Elysia server on :8000 — so dev needs absolute
-    // URLs. MODE=development on the server enables TLS with the same ssl/ cert.
-    baseUrl: 'https://localhost:8000/',
-    wsUrl: 'wss://localhost:8000/api/message/ws'
+    // Same shape as production: the dev server proxies /api to the Elysia
+    // server (see proxy.conf.json), so the browser only ever talks to its own
+    // origin. That keeps dev and prod on one code path and means the
+    // self-signed cert never reaches the browser — no interstitial to click
+    // through, and no failed request on every page load.
+    baseUrl: '/',
+    wsUrl: '/api/message/ws'
 }

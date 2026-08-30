@@ -35,6 +35,9 @@
             <mat-icon matIconPrefix>alternate_email</mat-icon>
             <input matInput type="text" placeholder="yourname" formControlName="username"
               (input)="updateErrorMessgae('username')" />
+            @if (isRegister) {
+            <mat-hint>{{ usernameHint }}</mat-hint>
+            }
             <mat-error>{{ errorMessages.username() }}</mat-error>
           </mat-form-field>
 

@@ -9,6 +9,8 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog'
 
+// keep in step with MAX_PHOTO_BYTES in the server's photo.type.ts — a file this
+// side accepts but the server rejects fails as a 422 with nothing the user can do
 const MAX_BYTES = 5 * 1024 * 1024
 
 @Component({

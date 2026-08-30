@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/out-tsc
+**/.angular
+**/.git
+**/.env
+**/.env.*
+!**/.env.example
+ssl/
+**/*.log
+Dockerfile
+.dockerignore
