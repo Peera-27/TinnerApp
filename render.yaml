@@ -51,4 +51,7 @@ services:
       - key: MAIL_FROM
         sync: false
       # MODE is intentionally absent -> tls.config.ts falls back to 'production'
-      # and skips the local dev certificates; Render terminates TLS itself.
+      # and skips the local dev certificates; Render terminates TLS itself. The
+      # same fallback is what keeps /api-doc shut here: swagger.config.ts reads
+      # an absent MODE as production. Add ENABLE_API_DOC=true in the dashboard
+      # and restart to open the docs for a demo; delete it to close them again.
