@@ -32,8 +32,7 @@
               }
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/ngx-spinner/animations/ball-8bits.css"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -47,8 +46,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
                 }
               ],
               "outputHashing": "all"
@@ -69,7 +68,7 @@
         },
         "serve": {
           "options": {
-            "ssl": true,
+            "ssl": false,
             "sslCert": "../ssl/localhost.pem",
             "sslKey": "../ssl/localhost-key.pem"
           },
@@ -110,5 +109,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

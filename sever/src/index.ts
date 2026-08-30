@@ -5,16 +5,25 @@ import { jwtConfig } from "./configs/jwt.config"
 import { swaggerConfig } from "./configs/swagger.config"
 import { tlsConfig } from "./configs/tls.config"
 import { AccountController } from "./controllers/account.controller"
+import { HubController } from "./controllers/hub.controller"
 import { LikeController } from "./controllers/like.controller"
+import { NotificationController } from "./controllers/notification.controller"
 import { PhotoController } from "./controllers/photo.controller"
+import { SafetyController } from "./controllers/safety.controller"
 import { UserController } from "./controllers/user.controller"
-import { mongodb } from "./configs/database.config"
+import { postgres } from "./configs/database.config"
 import { ErrorController } from "./controllers/error.controller"
 import { MessageController } from "./controllers/message.controller"
+import { TokenService } from "./services/token.service"
 
-mongodb.connect()
+postgres.connect()
 
-
+// spent and expired refresh tokens are only rows taking up space — clear them
+// on boot and once a day after that
+TokenService.prune().catch(error => console.error("token prune failed", error))
+setInterval(() => {
+  TokenService.prune().catch(error => console.error("token prune failed", error))
+}, 24 * 60 * 60_000)
 
 const app = new Elysia()
   .use(swaggerConfig)
@@ -27,6 +36,9 @@ const app = new Elysia()
   .use(LikeController)
   .use(PhotoController)
   .use(MessageController)
+  .use(NotificationController)
+  .use(SafetyController)
+  .use(HubController)
 
   .use(staticPlugin({
     assets: "public/uploads",

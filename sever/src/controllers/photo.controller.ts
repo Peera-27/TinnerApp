@@ -29,9 +29,10 @@ export const PhotoController = new Elysia({
 
 
 
-    .delete('/:photo_id', async ({ params: { photo_id }, set }) => {
+    .delete('/:photo_id', async ({ params: { photo_id }, set, Auth }) => {
         try {
-            await PhotoService.delete(photo_id)
+            const user_id = (Auth.payload as AuthPayload).id
+            await PhotoService.delete(photo_id, user_id)
             set.status = "No Content"
         } catch (error) {
             set.status = "Bad Request"

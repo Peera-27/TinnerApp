@@ -1,20 +1,19 @@
-.container {
-    // border: 1px solid magenta;
-    text-align: center;
+.app-shell {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
 }
 
-.content {
-    // border: 1px solid red;
+.app-main {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex: 1 1 auto;
+    padding-top: var(--tn-header-h);
 }
 
-* {
-    font-family: 'HYWenHei 85W';
-
+::ng-deep .ngx-spinner-overlay {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" role="img" aria-label="No photo yet">
+  <!--
+    Neutral bust placeholder. The background is left transparent so the card or
+    tile underneath supplies it — identical to a white plate in light mode, and
+    not a bright block in dark mode.
+  -->
+  <g fill="#e6e6e6">
+    <circle cx="500" cy="336" r="196" />
+    <path d="M166 798C169 653 307 538 500 538C693 538 831 653 834 798C836 886 693 947 500 947C307 947 164 886 166 798Z" />
+  </g>
+</svg>

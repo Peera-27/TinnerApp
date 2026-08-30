@@ -8,9 +8,10 @@ export const _profile = t.Object({
     id: t.String(),
     introduction: t.Optional(t.String()),
     interest: t.Optional(t.String()),
-    location: t.Optional(t.String()),
+    location: t.Optional(t.String({ maxLength: 100 })),
     age: t.Optional(t.String()),
     last_active: t.Optional(t.Date()),
+    is_online: t.Optional(t.Boolean()),
     create_at: t.Optional(t.Date()),
     updated_at: t.Optional(t.Date()),
     //todo:implement image feature
@@ -28,11 +29,13 @@ const _userPagination = t.Object({
     username: t.Optional(t.String()),
     min_age: t.Optional(t.Number()),
     max_age: t.Optional(t.Number()),
+    location: t.Optional(t.String()),
+    interest: t.Optional(t.String()),
     looking_for: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')])),
     gender: t.Optional(t.Union([t.Literal('male'), t.Literal('female'), t.Literal('all')])),
 })
 
-export const _updateProfile = t.Omit(_profile, ['id', 'username', 'updated_at', 'create_at', 'last_active', 'age'])
+export const _updateProfile = t.Omit(_profile, ['id', 'username', 'updated_at', 'create_at', 'last_active', 'age', 'is_online'])
 export const _userPaginator = CreatePagination(_user, _userPagination)
 
 export const UserDto = new Elysia().model({
@@ -40,7 +43,8 @@ export const UserDto = new Elysia().model({
     updateProfile: _updateProfile,
     users: _userPaginator,
     user: _user,
-    target_id: t.Object({ target_id: t.String() })
+    target_id: t.Object({ target_id: t.String() }),
+    like_result: t.Object({ liked: t.Boolean(), matched: t.Boolean() })
 })
 
 

@@ -1,32 +1,428 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
+// =============================================================================
+//  Tinner — global design system
+//  Angular Material 19 (M3) supplies the component tokens; everything layered on
+//  top is expressed as `--tn-*` custom properties so components stay theme-safe.
+//  Leaving `theme-type` unset makes Material emit light-dark() values, so the
+//  whole app switches themes by flipping `color-scheme` on <html>.
+// =============================================================================
 @use '@angular/material' as mat;
 
+$plain-font: 'Plus Jakarta Sans, "Segoe UI", Roboto, system-ui, sans-serif';
+$brand-font: 'Outfit, "Plus Jakarta Sans", "Segoe UI", sans-serif';
+
 html {
-    @include mat.theme((color: (theme-type: light,
-                primary: mat.$azure-palette,
-                tertiary: mat.$blue-palette,
+    color-scheme: light dark;
+
+    @include mat.theme((color: (primary: mat.$rose-palette,
+                tertiary: mat.$violet-palette,
             ),
-            typography: Roboto,
+            typography: (plain-family: $plain-font,
+                brand-family: $brand-font,
+                bold-weight: 700,
+                medium-weight: 600,
+                regular-weight: 400,
+            ),
             density: 0,
         ));
 }
 
+html.theme-light {
+    color-scheme: light;
+}
+
+html.theme-dark {
+    color-scheme: dark;
+}
+
+// -----------------------------------------------------------------------------
+//  Tokens
+// -----------------------------------------------------------------------------
+:root {
+    --tn-brand-1: #ff4d6d;
+    --tn-brand-2: #c44bff;
+    --tn-brand-3: #ff9a5b;
+    --tn-gradient: linear-gradient(135deg, #ff4d6d 0%, #c44bff 100%);
+    --tn-gradient-soft: linear-gradient(135deg, rgba(255, 77, 109, .14), rgba(196, 75, 255, .14));
+    --tn-gradient-warm: linear-gradient(135deg, #ff7a59 0%, #ff4d6d 55%, #c44bff 100%);
+
+    --tn-bg: light-dark(#fdf7fa, #0e0c13);
+    --tn-surface: light-dark(#ffffff, #171320);
+    --tn-surface-2: light-dark(#faf5f9, #1f1a2b);
+    --tn-surface-3: light-dark(#f3ecf3, #272134);
+    --tn-text: light-dark(#181320, #f5f2f9);
+    --tn-text-muted: light-dark(#6d6680, #a79eb9);
+    --tn-text-faint: light-dark(#948da5, #7d7590);
+    --tn-border: light-dark(#efe5ee, #2c2639);
+    --tn-border-strong: light-dark(#e2d5e2, #3a3249);
+
+    --tn-success: light-dark(#0f9d63, #34d399);
+    --tn-danger: light-dark(#e02f52, #fb7185);
+
+    --tn-r-xs: 8px;
+    --tn-r-sm: 12px;
+    --tn-r-md: 18px;
+    --tn-r-lg: 26px;
+    --tn-r-xl: 34px;
+    --tn-r-full: 999px;
+
+    --tn-sh-1: 0 1px 2px light-dark(rgba(24, 19, 32, .06), rgba(0, 0, 0, .4));
+    --tn-sh-2: 0 4px 16px light-dark(rgba(24, 19, 32, .07), rgba(0, 0, 0, .45));
+    --tn-sh-3: 0 12px 32px light-dark(rgba(24, 19, 32, .1), rgba(0, 0, 0, .5));
+    --tn-sh-4: 0 24px 60px light-dark(rgba(88, 24, 74, .16), rgba(0, 0, 0, .6));
+    --tn-sh-brand: 0 10px 30px rgba(255, 77, 109, .32);
+
+    --tn-header-h: 68px;
+    --tn-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+// -----------------------------------------------------------------------------
+//  Base
+// -----------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 html {
     height: 100%;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
     height: 100%;
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: var(--tn-text);
+    background-color: var(--tn-bg);
+    background-image:
+        radial-gradient(60rem 40rem at 110% -10%, rgba(196, 75, 255, .1), transparent 60%),
+        radial-gradient(50rem 34rem at -10% 0%, rgba(255, 77, 109, .12), transparent 62%);
+    background-attachment: fixed;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', Roboto, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3,
+h4 {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -.02em;
+    margin: 0;
+}
+
+a {
+    color: var(--tn-brand-1);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+}
+
+::selection {
+    background: rgba(255, 77, 109, .22);
+}
+
+:focus-visible {
+    outline: 2px solid var(--tn-brand-1);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--tn-border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--tn-border-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+}
+
+// Material Symbols, falling back to the classic icon font if it fails to load.
+.material-icons,
+.mat-icon {
+    font-family: 'Material Symbols Rounded', 'Material Icons' !important;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-feature-settings: 'liga';
+}
+
+// -----------------------------------------------------------------------------
+//  Layout helpers
+// -----------------------------------------------------------------------------
+.tn-page {
+    width: 100%;
+    max-width: 1220px;
+    margin: 0 auto;
+    padding: 28px 24px 96px;
+    text-align: left;
+}
+
+.tn-page--wide {
+    max-width: 1440px;
+}
+
+.tn-page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.tn-page-head h1 {
+    font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.tn-page-head p {
+    margin: 6px 0 0;
+    color: var(--tn-text-muted);
+    font-size: .95rem;
+}
+
+.tn-card {
+    background: var(--tn-surface);
+    border: 1px solid var(--tn-border);
+    border-radius: var(--tn-r-lg);
+    box-shadow: var(--tn-sh-2);
+}
+
+.tn-gradient-text {
+    background: var(--tn-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.tn-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: var(--tn-r-full);
+    background: var(--tn-surface-3);
+    color: var(--tn-text-muted);
+    font-size: .8rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.tn-chip--brand {
+    background: var(--tn-gradient-soft);
+    color: var(--tn-brand-1);
+}
+
+.tn-spacer,
 .my-spacer {
     flex: 1 1 auto;
-
 }
 
-.image-avatar {
-    background-size: cover;
+.tn-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+// -----------------------------------------------------------------------------
+//  Buttons
+// -----------------------------------------------------------------------------
+.mat-mdc-button-base {
+    letter-spacing: .01em !important;
+    font-weight: 600 !important;
+    --mdc-text-button-container-shape: var(--tn-r-full);
+    --mdc-filled-button-container-shape: var(--tn-r-full);
+    --mdc-protected-button-container-shape: var(--tn-r-full);
+    --mdc-outlined-button-container-shape: var(--tn-r-full);
+}
+
+.tn-btn-gradient.mat-mdc-button-base {
+    background: var(--tn-gradient) !important;
+    color: #fff !important;
+    box-shadow: var(--tn-sh-brand);
+    border: 0;
+    transition: transform .2s var(--tn-ease), box-shadow .2s var(--tn-ease), filter .2s;
+}
+
+.tn-btn-gradient.mat-mdc-button-base:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: saturate(1.08);
+    box-shadow: 0 14px 36px rgba(255, 77, 109, .42);
+}
+
+.tn-btn-gradient.mat-mdc-button-base:disabled {
+    background: var(--tn-surface-3) !important;
+    color: var(--tn-text-faint) !important;
+    box-shadow: none;
+}
+
+// -----------------------------------------------------------------------------
+//  Material component polish
+// -----------------------------------------------------------------------------
+.mat-mdc-form-field {
+    width: 100%;
+    --mdc-outlined-text-field-container-shape: 14px;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+    font-size: .75rem;
+}
+
+.mat-mdc-card {
+    --mdc-outlined-card-container-shape: var(--tn-r-lg);
+    --mdc-elevated-card-container-shape: var(--tn-r-lg);
+}
+
+.mat-mdc-menu-panel {
+    border-radius: var(--tn-r-md) !important;
+    box-shadow: var(--tn-sh-3) !important;
+    border: 1px solid var(--tn-border);
+    min-width: 210px !important;
+}
+
+.mat-mdc-menu-item {
+    border-radius: 12px;
+    margin: 4px 6px;
+    width: calc(100% - 12px);
+    min-height: 42px !important;
+}
+
+.mat-mdc-dialog-surface {
+    border-radius: var(--tn-r-lg) !important;
+    box-shadow: var(--tn-sh-4) !important;
+}
+
+.mat-mdc-snack-bar-container {
+    --mdc-snackbar-container-shape: var(--tn-r-md);
+}
+
+.mat-mdc-paginator {
+    background: transparent !important;
+    color: var(--tn-text-muted);
+    border-radius: var(--tn-r-md);
+}
+
+.mat-mdc-tab-group,
+.mat-mdc-tab-nav-bar {
+    --mdc-tab-indicator-active-indicator-height: 3px;
+    --mat-tab-header-label-text-weight: 600;
+}
+
+.mat-expansion-panel {
+    border-radius: var(--tn-r-lg) !important;
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-2) !important;
+    background: var(--tn-surface) !important;
+}
+
+.mat-mdc-option {
+    border-radius: 10px;
+    margin: 2px 6px;
+    min-height: 42px !important;
+}
+
+// -----------------------------------------------------------------------------
+//  Animation
+// -----------------------------------------------------------------------------
+@keyframes tn-rise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.tn-rise {
+    animation: tn-rise .45s var(--tn-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+// -----------------------------------------------------------------------------
+//  Global loading overlay (rendered inside the ngx-spinner host)
+// -----------------------------------------------------------------------------
+.tn-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.tn-loader__heart {
+    width: 54px;
+    height: 54px;
+    background: var(--tn-gradient);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8.5-5.4-8.5-11A5 5 0 0 1 12 6.5 5 5 0 0 1 20.5 10c0 5.6-8.5 11-8.5 11z'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-8.5-5.4-8.5-11A5 5 0 0 1 12 6.5 5 5 0 0 1 20.5 10c0 5.6-8.5 11-8.5 11z'/%3E%3C/svg%3E") center/contain no-repeat;
+    animation: tn-beat 1.1s var(--tn-ease) infinite;
+}
+
+.tn-loader__text {
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-size: .72rem;
+    color: #fff;
+}
+
+@keyframes tn-beat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.18);
+    }
+
+    45% {
+        transform: scale(.96);
+    }
+
+    65% {
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 640px) {
+    .tn-page {
+        padding: 20px 16px 108px;
+    }
 }

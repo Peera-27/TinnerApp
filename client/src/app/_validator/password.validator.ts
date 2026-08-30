@@ -15,7 +15,9 @@ export const PasswordValidator = (minlength: number, maxlength: number): Validat
             return { invalidUpperCase: true }
         else if (!/[0-9]/.test(password))
             return { invalidNumeric: true }
-        else if (!/[!@#&*?;:'"{}[]|=-_]/.test(password))
+        // any non-alphanumeric character counts as a symbol; the old class was
+        // malformed and silently rejected passwords whose only symbol was - or _
+        else if (!/[^A-Za-z0-9\s]/.test(password))
             return { invalidSpecialChar: true }
         return null
     }

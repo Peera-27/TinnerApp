@@ -1,10 +1,14 @@
-<div class="container">
-  <ngx-spinner>
-    <p style="color: rgb(23, 23, 23)">🥵🥵loading🥵🥵</p>
-  </ngx-spinner>
-  <app-header></app-header>
+<div class="app-shell">
+  <app-header />
 
-  <div class="content">
-    <router-outlet></router-outlet>
-  </div>
+  <main class="app-main">
+    <router-outlet />
+  </main>
 </div>
+
+<ngx-spinner>
+  <div class="tn-loader">
+    <div class="tn-loader__heart"></div>
+    <p class="tn-loader__text">finding your people</p>
+  </div>
+</ngx-spinner>

@@ -1,0 +1,70 @@
+<form class="filters" (ngSubmit)="onSubmit()" autocomplete="off">
+  <div class="filters__row">
+    <label class="searchbox">
+      <mat-icon>search</mat-icon>
+      <input type="text" name="username" placeholder="Search by username" [(ngModel)]="pagination.username" />
+      @if (pagination.username) {
+      <button type="button" class="searchbox__clear" aria-label="Clear search"
+        (click)="pagination.username = ''; onSubmit()">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </label>
+
+    <button type="button" class="toggle" [class.is-on]="expanded()" (click)="expanded.set(!expanded())">
+      <mat-icon>tune</mat-icon>
+      <span>Filters</span>
+      @if (activeCount > 0) {
+      <span class="toggle__count">{{ activeCount }}</span>
+      }
+    </button>
+
+    <button mat-flat-button class="tn-btn-gradient" type="submit">Search</button>
+  </div>
+
+  @if (expanded()) {
+  <div class="filters__advanced">
+    <mat-form-field appearance="outline">
+      <mat-label>Their gender</mat-label>
+      <mat-select name="gender" [(ngModel)]="pagination.gender">
+        @for (g of genders; track g.value) {
+        <mat-option [value]="g.value">{{ g.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Looking for</mat-label>
+      <mat-select name="looking_for" [(ngModel)]="pagination.looking_for">
+        @for (g of genders; track g.value) {
+        <mat-option [value]="g.value">{{ g.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Min age</mat-label>
+      <input matInput type="number" min="18" max="99" name="min_age" [(ngModel)]="pagination.min_age" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Max age</mat-label>
+      <input matInput type="number" min="18" max="99" name="max_age" [(ngModel)]="pagination.max_age" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput type="text" name="location" placeholder="City or area" [(ngModel)]="pagination.location" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Interest</mat-label>
+      <input matInput type="text" name="interest" placeholder="hiking, coffee…" [(ngModel)]="pagination.interest" />
+    </mat-form-field>
+
+    <button mat-button type="button" class="reset" (click)="onReset()">
+      <mat-icon>restart_alt</mat-icon> Reset
+    </button>
+  </div>
+  }
+</form>

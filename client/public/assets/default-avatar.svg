@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Default avatar">
+  <!--
+    Solid disc with the person knocked out. The knockout is painted white and
+    clipped to the disc, so on a light surface it reads exactly as the flat
+    black icon, and on a dark surface the disc recedes and the white silhouette
+    carries the shape instead. The disc is centred in the box so it stays true
+    when the element is masked into a circle.
+  -->
+  <defs>
+    <clipPath id="disc">
+      <circle cx="300" cy="300" r="282" />
+    </clipPath>
+  </defs>
+  <circle cx="300" cy="300" r="282" fill="#000000" />
+  <g clip-path="url(#disc)" fill="#ffffff">
+    <circle cx="300" cy="240" r="114" />
+    <circle cx="300" cy="559" r="206" />
+  </g>
+</svg>

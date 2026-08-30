@@ -1,0 +1,38 @@
+<h2 mat-dialog-title class="report__title">
+  <mat-icon>flag</mat-icon>
+  Report {{ data.name }}
+</h2>
+
+<mat-dialog-content class="report__body">
+  <p class="report__lead">
+    Tell us what is wrong. Reports are private — {{ data.name }} is never told who filed one.
+  </p>
+
+  <fieldset class="report__reasons">
+    <legend>Reason</legend>
+    @for (option of reasons; track option.value) {
+    <label class="report__reason" [class.is-on]="reason() === option.value">
+      <input type="radio" name="reason" [value]="option.value" [checked]="reason() === option.value"
+        (change)="reason.set(option.value)" />
+      <span>{{ option.label }}</span>
+    </label>
+    }
+  </fieldset>
+
+  <label class="report__detail">
+    <span>Anything else? (optional)</span>
+    <textarea rows="3" maxlength="1000" [value]="detail()"
+      (input)="detail.set($any($event.target).value)"
+      placeholder="What happened?"></textarea>
+  </label>
+
+  <label class="report__block">
+    <input type="checkbox" [checked]="block()" (change)="block.set($any($event.target).checked)" />
+    <span>Also block {{ data.name }} — you will disappear from each other</span>
+  </label>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button class="tn-btn-gradient" type="button" (click)="submit()">Send report</button>
+</mat-dialog-actions>

@@ -1,0 +1,109 @@
+// Shared shell for the small standalone auth screens (forgot / reset password).
+// The full split layout lives in login.component.scss — these two are one card.
+.auth-page {
+    display: grid;
+    place-items: center;
+    min-height: calc(100vh - var(--tn-header-h) - 80px);
+    padding: 40px 20px;
+}
+
+.auth-box {
+    width: min(460px, 100%);
+    padding: 34px;
+    border-radius: var(--tn-r-lg);
+    background: var(--tn-surface);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-3);
+    animation: tn-rise .45s var(--tn-ease) both;
+}
+
+.auth-box__mark {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 18px;
+    border-radius: 17px;
+    background: var(--tn-gradient);
+    box-shadow: var(--tn-sh-brand);
+
+    mat-icon {
+        color: #fff;
+        font-size: 26px;
+        width: 26px;
+        height: 26px;
+    }
+}
+
+.auth-box h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
+.auth-box__lead {
+    margin: 8px 0 24px;
+    color: var(--tn-text-muted);
+    font-size: .92rem;
+    line-height: 1.6;
+}
+
+.auth-box form {
+    display: grid;
+    gap: 4px;
+}
+
+.auth-box mat-form-field {
+    width: 100%;
+}
+
+.auth-box .submit {
+    width: 100%;
+    height: 48px;
+    margin-top: 10px;
+    border-radius: var(--tn-r-full);
+    font-weight: 700;
+}
+
+.auth-box__back {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    color: var(--tn-text-muted);
+    font-size: .86rem;
+    text-decoration: none;
+
+    &:hover {
+        color: var(--tn-brand-1);
+        text-decoration: underline;
+    }
+}
+
+.auth-box__note {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin: 0 0 20px;
+    padding: 13px 15px;
+    border-radius: var(--tn-r-md);
+    font-size: .87rem;
+    line-height: 1.5;
+
+    mat-icon {
+        flex: 0 0 auto;
+        font-size: 19px;
+        width: 19px;
+        height: 19px;
+    }
+}
+
+.auth-box__note--ok {
+    background: color-mix(in srgb, var(--tn-success) 12%, transparent);
+    color: var(--tn-success);
+}
+
+.auth-box__note--bad {
+    background: color-mix(in srgb, var(--tn-danger) 12%, transparent);
+    color: var(--tn-danger);
+}

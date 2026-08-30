@@ -1,0 +1,59 @@
+<div class="tn-page">
+  <header class="tn-page-head">
+    <div>
+      <h1>Messages</h1>
+      <p>Every conversation you are part of, most recent first.</p>
+    </div>
+
+    <span class="count-pill">
+      <mat-icon>mark_email_unread</mat-icon>
+      <strong>{{ unread() }}</strong> unread
+    </span>
+  </header>
+
+  @if (threads().items.length > 0) {
+  <ul class="inbox">
+    @for (thread of threads().items; track thread.user.id) {
+    <li>
+      <a class="row" [class.is-unread]="thread.unread > 0" routerLink="/members-profile/{{ thread.user.username }}"
+        [queryParams]="{ chat: 1 }" [attr.aria-label]="'Open conversation with ' + thread.user.display_name">
+        <img class="row__avatar" [src]="avatarOf(thread)" [alt]="thread.user.display_name ?? 'Member'"
+          loading="lazy" (error)="onImageError($event)" />
+
+        <span class="row__body">
+          <span class="row__top">
+            <strong>{{ thread.user.display_name }}</strong>
+            <time>{{ timeAgo(thread.last_message.created_at) }}</time>
+          </span>
+          <span class="row__preview">
+            @if (isMine(thread)) {
+            <span class="row__you">You:</span>
+            }
+            {{ thread.last_message.content }}
+          </span>
+        </span>
+
+        @if (thread.unread > 0) {
+        <span class="row__badge">{{ thread.unread }}</span>
+        } @else {
+        <mat-icon class="row__caret">chevron_right</mat-icon>
+        }
+      </a>
+    </li>
+    }
+  </ul>
+
+  <div class="list-foot">
+    <mat-paginator [length]="threads().pagination.length" [pageSize]="threads().pagination.pageSize"
+      [pageIndex]="(threads().pagination.currentPage ?? 1) - 1" [pageSizeOptions]="pageSize"
+      aria-label="Select page" (page)="onPageChange($event)" />
+  </div>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="forum" heading="No conversations yet"
+      message="Open someone's profile and tap Message to start one — it lands here afterwards.">
+      <button mat-flat-button class="tn-btn-gradient" routerLink="/">Find someone to talk to</button>
+    </app-empty-state>
+  </div>
+  }
+</div>

@@ -9,19 +9,30 @@ export interface UserQueryPagination extends QueryPagination {
     max_age?: number
     looking_for?: string
     gender?: string
+    location?: string
+    interest?: string
 }
 export interface Paginator<T, U> {
     pagination: T,
     items: U[]
 }
-export const default_pageSizeOption = [2, 5, 10, 25, 50, 100, 200]
+export const default_pageSizeOption = [12, 24, 48, 96]
 
-export const default_paginator = {
-    pagination: {
-        pageSize: 5,
-        currentPage: 1,
-        length: 1,
-    },
-    items: []
-
+/**
+ * Every list (members, followers, following) needs its OWN paginator object —
+ * sharing one const meant a page-size change on one screen silently changed the
+ * others, because the pagination object was mutated in place.
+ */
+export function createPaginator<T extends QueryPagination, U>(): Paginator<T, U> {
+    return {
+        pagination: {
+            pageSize: 12,
+            currentPage: 1,
+            length: 0,
+        } as T,
+        items: []
+    }
 }
+
+/** @deprecated use {@link createPaginator} — this const is shared by reference. */
+export const default_paginator = createPaginator<UserQueryPagination, never>()

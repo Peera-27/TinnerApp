@@ -1,72 +1,149 @@
-@if(user){
-<div class="profile-container">
-  <mat-tab-group>
+@if (user) {
+<div class="tn-page">
+  <header class="tn-page-head">
+    <div class="who">
+      <img class="who__avatar" [src]="avatar" [alt]="user.display_name ?? 'Your avatar'" />
+      <div>
+        <h1>{{ user.display_name || 'Your profile' }}</h1>
+        <p>&#64;{{ user.username }} — this is what other people see.</p>
+      </div>
+    </div>
+
+    <div class="meter" [attr.aria-label]="'Profile ' + completeness + '% complete'">
+      <div class="meter__bar"><span [style.width.%]="completeness"></span></div>
+      <span class="meter__label">{{ completeness }}% complete</span>
+    </div>
+  </header>
+
+  <mat-tab-group animationDuration="220ms">
     <mat-tab label="Profile">
-      <form (ngSubmit)="onSubmit()" #form="ngForm" autocomplete="off">
-        <mat-form-field appearance="outline">
-          <mat-label>Display Name</mat-label>
-          <input matInput [(ngModel)]="user.display_name" name="display_name" />
-        </mat-form-field>
+      <form (ngSubmit)="onSubmit()" #form="ngForm" autocomplete="off" class="form">
+        <section class="card">
+          <h2><mat-icon>person</mat-icon> Basics</h2>
+          <div class="grid">
+            <mat-form-field appearance="outline" class="col-2">
+              <mat-label>Display name</mat-label>
+              <input matInput [(ngModel)]="user.display_name" name="display_name" maxlength="20" />
+              <mat-hint>The name people see on your card.</mat-hint>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Introduction</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="user.introduction"
-            name="introduction"
-            rows="6"
-          ></textarea>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select [(ngModel)]="user.gender" name="gender">
+                @for (c of choices; track c.value) {
+                <mat-option [value]="c.value">{{ c.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Interest</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="user.interest"
-            name="interest"
-            rows="6"
-          ></textarea>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Looking for</mat-label>
+              <mat-select [(ngModel)]="user.looking_for" name="looking_for">
+                @for (c of choices; track c.value) {
+                <mat-option [value]="c.value">{{ c.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Looking For</mat-label>
-          <mat-select
-            matInput
-            [(ngModel)]="user.looking_for"
-            name="looking_for"
-          >
-            <mat-option value="male">Male</mat-option>
-            <mat-option value="female">Female</mat-option>
-            <mat-option value="all">ALL</mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="col-2">
+              <mat-label>Location</mat-label>
+              <mat-icon matIconPrefix>location_on</mat-icon>
+              <input matInput [(ngModel)]="user.location" name="location" placeholder="City or area" />
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Gender</mat-label>
-          <mat-select matInput [(ngModel)]="user.gender" name="gender">
-            <mat-option value="male">Male</mat-option>
-            <mat-option value="female">Female</mat-option>
-            <mat-option value="all">ALL</mat-option>
-          </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="col-2">
+              <mat-label>Email</mat-label>
+              <mat-icon matIconPrefix>mail</mat-icon>
+              <input matInput type="email" [(ngModel)]="user.email" name="email" email
+                placeholder="you@example.com" />
+              <mat-hint>Private — only used to get you back in if you forget your password.</mat-hint>
+            </mat-form-field>
+          </div>
+        </section>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Location</mat-label>
-          <input matInput [(ngModel)]="user.location" name="location" />
-        </mat-form-field>
+        <section class="card">
+          <h2><mat-icon>waving_hand</mat-icon> Your story</h2>
+          <mat-form-field appearance="outline">
+            <mat-label>Introduction</mat-label>
+            <textarea matInput [(ngModel)]="user.introduction" name="introduction" rows="5"
+              placeholder="A couple of sentences about you — what you do, what you are after."></textarea>
+          </mat-form-field>
 
-        <button
-          mat-raised-button
-          type="submit"
-          [disabled]="form.invalid || !form.dirty"
-        >
-          Save
-        </button>
+          <mat-form-field appearance="outline">
+            <mat-label>Interests</mat-label>
+            <textarea matInput [(ngModel)]="user.interest" name="interest" rows="3"
+              placeholder="Coffee, hiking, horror films…"></textarea>
+            <mat-hint>Separate them with commas — they show up as tags on your card.</mat-hint>
+          </mat-form-field>
+        </section>
+
+        <div class="actionbar">
+          @if (saved()) {
+          <span class="saved"><mat-icon>check_circle</mat-icon> Saved</span>
+          } @else if (form.dirty) {
+          <span class="unsaved"><mat-icon>edit</mat-icon> Unsaved changes</span>
+          }
+          <button mat-flat-button class="tn-btn-gradient" type="submit" [disabled]="form.invalid || !form.dirty">
+            Save changes
+          </button>
+        </div>
       </form>
     </mat-tab>
 
-    <mat-tab label="Photos">
-      <app-photo [user]="user"></app-photo>
+    <mat-tab [label]="'Photos (' + (user.photos?.length ?? 0) + ')'">
+      <app-photo [user]="user" />
+    </mat-tab>
+
+    <mat-tab label="Security">
+      <form (ngSubmit)="onChangePassword()" #pwform="ngForm" autocomplete="off" class="form">
+        <section class="card">
+          <h2><mat-icon>lock</mat-icon> Change password</h2>
+          <p class="card__lead">
+            Changing it signs you out everywhere, this device included — you will sign back in with the new one.
+          </p>
+
+          <div class="grid">
+            <mat-form-field appearance="outline" class="col-2">
+              <mat-label>Current password</mat-label>
+              <input matInput type="password" name="current_password" [(ngModel)]="currentPassword" required />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>New password</mat-label>
+              <input matInput type="password" name="new_password" [(ngModel)]="newPassword" required
+                minlength="8" maxlength="16" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm new password</mat-label>
+              <input matInput type="password" name="confirm_password" [(ngModel)]="confirmPassword" required />
+              @if (confirmPassword && newPassword !== confirmPassword) {
+              <mat-error>The two passwords do not match.</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <ul class="rules">
+            @for (rule of passwordRules; track rule.label) {
+            <li [class.is-met]="rule.test(newPassword)">
+              <mat-icon>{{ rule.test(newPassword) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+              {{ rule.label }}
+            </li>
+            }
+          </ul>
+
+          @if (passwordError()) {
+          <p class="pw-error" role="alert"><mat-icon>error</mat-icon>{{ passwordError() }}</p>
+          }
+        </section>
+
+        <div class="actionbar">
+          <button mat-flat-button class="tn-btn-gradient" type="submit"
+            [disabled]="!canChangePassword() || changingPassword()">
+            {{ changingPassword() ? 'Saving…' : 'Change password' }}
+          </button>
+        </div>
+      </form>
     </mat-tab>
   </mat-tab-group>
 </div>

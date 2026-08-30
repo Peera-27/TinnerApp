@@ -1,34 +1,138 @@
-<mat-toolbar>
-  <button class="home-button" routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">
-    <span>Tinner</span>
-  </button>
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" routerLink="/" aria-label="Tinner home">
+      <span class="brand__mark"><mat-icon>favorite</mat-icon></span>
+      <span class="brand__name tn-gradient-text">Tinner</span>
+    </a>
 
-  @if(user()===undefined){
-  <span class="my-spacer"></span>
-  <button routerLink="/login" routerLinkActive="active">
-    <mat-icon>login </mat-icon>
-    <span> Login</span>
-  </button>
-  } @if(user()){
-  <button routerLink="/followers" routerLinkActive="active">
-    <span> Follower</span>
-  </button>
-  <button routerLink="/followings" routerLinkActive="active">
-    <span> Following</span>
-  </button>
+    @if (user()) {
+    <nav class="nav" aria-label="Main">
+      @for (item of nav(); track item.link) {
+      <a class="nav__link" [routerLink]="item.link" routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: item.exact }">
+        <span class="nav__icon">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          @if (item.badge > 0) {
+          <span class="badge" [attr.aria-label]="item.badge + ' unread'">{{ item.badge > 99 ? '99+' : item.badge
+            }}</span>
+          }
+        </span>
+        <span>{{ item.label }}</span>
+      </a>
+      }
+    </nav>
+    }
 
-  <span class="my-spacer"></span>
-  <button mat-button [matMenuTriggerFor]="menu">
+    <span class="tn-spacer"></span>
 
-    {{ user()?.display_name }}
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/profile">
-      <mat-icon>manage_accounts</mat-icon>Profile
+    @if (user()) {
+    <button class="icon-btn" type="button" [matMenuTriggerFor]="bell" (menuOpened)="onNotificationsOpened()"
+      matTooltip="Notifications" aria-label="Notifications">
+      <span class="nav__icon">
+        <mat-icon>notifications</mat-icon>
+        @if (unreadNotifications() > 0) {
+        <span class="badge">{{ unreadNotifications() > 99 ? '99+' : unreadNotifications() }}</span>
+        }
+      </span>
     </button>
 
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>logout</mat-icon><span>Logout</span>
-    </button></mat-menu>
+    <mat-menu #bell="matMenu" xPosition="before" class="bell-menu">
+      <div class="menu-head">
+        <div>
+          <strong>Notifications</strong>
+          <small>Likes, matches and messages</small>
+        </div>
+      </div>
+
+      @if (recent().length === 0) {
+      <p class="bell-empty">Nothing yet — go say hello to someone.</p>
+      } @else {
+      @for (item of recent(); track item.id) {
+      <a mat-menu-item class="bell-row" [routerLink]="linkFor(item)" [queryParams]="queryFor(item)">
+        <img class="bell-row__avatar" [src]="avatarOf(item)" alt="" />
+        <span class="bell-row__body">
+          <span class="bell-row__text">{{ textFor(item) }}</span>
+          <small>{{ timeAgo(item.created_at) }}</small>
+        </span>
+        <mat-icon class="bell-row__kind">{{ iconFor(item) }}</mat-icon>
+      </a>
+      }
+      }
+    </mat-menu>
+    }
+
+    <button class="icon-btn" type="button" (click)="theme.toggle()"
+      [matTooltip]="theme.isDark() ? 'Switch to light' : 'Switch to dark'"
+      [attr.aria-label]="theme.isDark() ? 'Switch to light theme' : 'Switch to dark theme'">
+      <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    @if (!user()) {
+    <a class="cta" routerLink="/login">
+      <mat-icon>login</mat-icon>
+      <span>Sign in</span>
+    </a>
+    } @else {
+    <button class="account" type="button" [matMenuTriggerFor]="menu" aria-label="Account menu">
+      <img class="account__avatar" [src]="avatar()" [alt]="user()?.display_name ?? 'Your avatar'" />
+      <span class="account__name">{{ user()?.display_name }}</span>
+      <mat-icon class="account__caret">expand_more</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu" xPosition="before">
+      <div class="menu-head">
+        <img [src]="avatar()" alt="" />
+        <div>
+          <strong>{{ user()?.display_name }}</strong>
+          <small>&#64;{{ user()?.username }}</small>
+        </div>
+      </div>
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>My profile</span>
+      </button>
+      <button mat-menu-item routerLink="/matches">
+        <mat-icon>favorite</mat-icon>
+        <span>My matches</span>
+      </button>
+      <button mat-menu-item routerLink="/blocked">
+        <mat-icon>block</mat-icon>
+        <span>Blocked people</span>
+      </button>
+      <button mat-menu-item routerLink="/followers">
+        <mat-icon>group</mat-icon>
+        <span>People following me</span>
+      </button>
+      <button mat-menu-item routerLink="/followings">
+        <mat-icon>volunteer_activism</mat-icon>
+        <span>People I follow</span>
+      </button>
+      <button mat-menu-item class="menu-danger" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+    </mat-menu>
+    }
+  </div>
+</header>
+
+@if (user()) {
+<nav class="tabbar" aria-label="Main">
+  @for (item of tabs(); track item.link) {
+  <a class="tabbar__link" [routerLink]="item.link" routerLinkActive="is-active"
+    [routerLinkActiveOptions]="{ exact: item.exact }">
+    <span class="nav__icon">
+      <mat-icon>{{ item.icon }}</mat-icon>
+      @if (item.badge > 0) {
+      <span class="badge" [attr.aria-label]="item.badge + ' unread'">{{ item.badge > 99 ? '99+' : item.badge }}</span>
+      }
+    </span>
+    <span>{{ item.label }}</span>
+  </a>
   }
-</mat-toolbar>
+  <a class="tabbar__link" routerLink="/profile" routerLinkActive="is-active">
+    <span class="nav__icon"><mat-icon>account_circle</mat-icon></span>
+    <span>Profile</span>
+  </a>
+</nav>
+}

@@ -1,6 +1,7 @@
 import { JWTPayloadSpec } from "@elysiajs/jwt"
 import Elysia from "elysia"
 import { jwtConfig } from "../configs/jwt.config"
+import { PresenceService } from "../services/presence.service"
 
 type AuthContext = {
     Auth: {
@@ -19,10 +20,16 @@ export const AuthMiddleWare = new Elysia({ name: 'Middleware.Auth' })
         const auth = headers['authorization']
         const token = auth && auth.startsWith('Bearer ') ? auth.slice(7) : null
         if (token) {
+            // an expired or forged token leaves the payload false, which the
+            // isSignIn macro turns into a 401. Throwing here made it a 500,
+            // which the client cannot tell apart from a real server fault —
+            // and 401 is what tells it to refresh and retry.
             payload = await jwt.verify(token)
-            if (!payload) {
-                throw new Error("Token has expired")
-            }
+            // every authenticated request is a sign of life — this is the only
+            // thing that keeps `last_active` (and the "recently active" sort
+            // built on it) from staying null forever
+            const user_id = (payload as unknown as AuthPayload).id
+            if (user_id) PresenceService.touch(user_id)
         }
         return {
             Auth: { payload }

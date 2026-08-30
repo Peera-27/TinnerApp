@@ -1,0 +1,60 @@
+// Shared layout for the three people listings (Discover / Followers / Following).
+.list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 22px;
+    margin-top: 26px;
+}
+
+.list-grid>* {
+    animation: tn-rise .45s var(--tn-ease) both;
+}
+
+.list-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.list-foot .mat-mdc-paginator {
+    border-radius: var(--tn-r-lg);
+    border: 1px solid var(--tn-border);
+    background: var(--tn-surface) !important;
+    box-shadow: var(--tn-sh-1);
+}
+
+.list-empty {
+    margin-top: 26px;
+}
+
+.count-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--tn-r-full);
+    background: var(--tn-surface);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-1);
+    color: var(--tn-text-muted);
+    font-size: .84rem;
+    font-weight: 600;
+}
+
+.count-pill strong {
+    color: var(--tn-text);
+}
+
+.count-pill mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--tn-brand-1);
+}
+
+@media (max-width: 520px) {
+    .list-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+    }
+}

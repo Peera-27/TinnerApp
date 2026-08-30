@@ -1,10 +1,82 @@
-@if (!user()) {
-<div class="container">
-  <h1 class="welcome">Welcome To Tinner App</h1>
-  <h3>Come on in to view your match</h3>
-  <p>All you need todo is <a href="/login">Singin or Singup </a></p>
-</div>
+@if (user()) {
+<app-member />
+} @else {
+<div class="landing">
+  <section class="hero">
+    <div class="hero__copy tn-rise">
+      <span class="hero__eyebrow">
+        <mat-icon>bolt</mat-icon> Meet people who want the same thing
+      </span>
 
-} @if (user()) {
-<app-member></app-member>
+      <h1>
+        Stop swiping.<br />
+        Start <span class="tn-gradient-text">matching</span>.
+      </h1>
+
+      <p>
+        Tinner puts real filters in your hands — age, gender, and what each person is
+        actually looking for — so the profiles you see are worth your time.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" routerLink="/login">
+          Create your profile
+          <mat-icon>arrow_forward</mat-icon>
+        </a>
+        <a class="btn btn--ghost" routerLink="/login">I already have an account</a>
+      </div>
+
+      <ul class="hero__points">
+        <li><mat-icon>check_circle</mat-icon> Free to join</li>
+        <li><mat-icon>check_circle</mat-icon> You choose who sees you</li>
+        <li><mat-icon>check_circle</mat-icon> No ads in your feed</li>
+      </ul>
+    </div>
+
+    <div class="hero__art" aria-hidden="true">
+      <div class="orb"></div>
+
+      <article class="mock mock--back">
+        <div class="mock__photo mock__photo--b"></div>
+        <div class="mock__meta">
+          <strong>Alex, 27</strong><span>Bangkok</span>
+        </div>
+      </article>
+
+      <article class="mock mock--front">
+        <div class="mock__photo mock__photo--a">
+          <span class="mock__badge"><mat-icon>favorite</mat-icon></span>
+        </div>
+        <div class="mock__meta">
+          <strong>Mint, 24</strong><span>Looking for friends &amp; more</span>
+        </div>
+        <div class="mock__tags">
+          <span class="tn-chip tn-chip--brand">Coffee</span>
+          <span class="tn-chip">Muay Thai</span>
+        </div>
+      </article>
+
+      <div class="pop pop--match"><mat-icon>auto_awesome</mat-icon> It&rsquo;s a match!</div>
+      <div class="pop pop--like"><mat-icon>favorite</mat-icon> 12 new likes</div>
+    </div>
+  </section>
+
+  <section class="steps">
+    @for (step of steps; track step.title) {
+    <article class="step">
+      <span class="step__icon"><mat-icon>{{ step.icon }}</mat-icon></span>
+      <h3>{{ step.title }}</h3>
+      <p>{{ step.text }}</p>
+    </article>
+    }
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <h2>Your people are already here.</h2>
+      <p>It takes about a minute to set up. Bring your best photo.</p>
+    </div>
+    <a class="btn btn--light" routerLink="/login">Get started <mat-icon>arrow_forward</mat-icon></a>
+  </section>
+</div>
 }

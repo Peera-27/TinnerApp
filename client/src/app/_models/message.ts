@@ -1,3 +1,5 @@
+import { User } from "./user"
+
 export interface Message {
     id?: string
     created_at?: Date
@@ -9,3 +11,10 @@ export interface Message {
     content?: string
 }
 
+/** One row of the inbox: who the conversation is with, its newest message and
+ *  how many of their messages are still unread. */
+export interface Thread {
+    user: User
+    last_message: Message
+    unread: number
+}

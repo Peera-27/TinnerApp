@@ -13,6 +13,9 @@ export interface User {
     location?: string,
     gender?: string,
     age?: string,
+    is_online?: boolean,
+    /** Only ever present on your own account. */
+    email?: string,
     avatar?: string,
     photos?: Photo[],
     photoOfTheDay?: string,

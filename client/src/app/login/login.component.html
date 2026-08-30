@@ -1,121 +1,164 @@
-<mat-card appearance="outlined">
-  <mat-card-header>
-    @if (mode === 'login') { Sign In } @if (mode === 'register') { Sign Up }
-  </mat-card-header>
-  <div class="login-container">
-    <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          placeholder="username"
-          type="text"
-          (input)="updateErrorMessgae('username')"
-          formControlName="username"
-        />
-        <mat-error>{{ errorMessages.username() }}</mat-error>
-      </mat-form-field>
+<div class="auth">
+  <!-- ------------------------------------------------------------ brand -->
+  <aside class="auth__brand" aria-hidden="true">
+    <div class="auth__brand-inner">
+      <span class="mark"><mat-icon>favorite</mat-icon></span>
+      <h2>{{ isRegister ? 'A few details and you are in.' : 'Good to see you again.' }}</h2>
+      <p>
+        {{ isRegister
+        ? 'Tell us who you are and who you would like to meet — you can change any of it later.'
+        : 'Your matches, your followers and your conversations are waiting.' }}
+      </p>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          placeholder="password"
-          type="password"
-          (input)="updateErrorMessgae('password')"
-          formControlName="password"
-        />
-        <mat-error>{{ errorMessages.password() }}</mat-error>
-      </mat-form-field>
-      @if (mode === 'register') {
-      <mat-form-field appearance="outline">
-        <mat-label>Confirm Password</mat-label>
-        <input
-          matInput
-          placeholder="confirm password"
-          type="password"
-          (input)="updateErrorMessgae('confirm_password')"
-          formControlName="confirm_password"
-        />
-        <mat-error>{{ errorMessages.confirm_password() }}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Display Name</mat-label>
-        <input
-          matInput
-          placeholder="display_name"
-          type="text"
-          (input)="updateErrorMessgae('display_name')"
-          formControlName="display_name"
-        />
-        <mat-error>{{ errorMessages.display_name() }}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Date of Birth</mat-label>
-        <input
-          matInput
-          [min]="mindate"
-          [max]="maxdate"
-          [matDatepicker]="picker"
-          formControlName="date_of_birth"
-        />
-        <mat-datepicker-toggle [for]="picker">
-          <mat-datepicker
-            #picker
-            startView="year"
-            [startAt]="startDate"
-          ></mat-datepicker>
-        </mat-datepicker-toggle>
-      </mat-form-field>
-      <div>
-        <label class="example-margin">Gender</label>
-        <mat-radio-group formControlName="gender">
-          <mat-radio-button class="example-margin" value="male"
-            >Male</mat-radio-button
-          >
-          <mat-radio-button class="example-margin" value="female"
-            >Female</mat-radio-button
-          >
-          <mat-radio-button class="example-margin" value="all"
-            >LGBTQ+</mat-radio-button
-          >
-        </mat-radio-group>
-      </div>
-      <div>
-        <label class="example-margin">Looking for</label>
-        <mat-radio-group formControlName="looking_for">
-          <mat-radio-button class="example-margin" value="male"
-            >Male</mat-radio-button
-          >
-          <mat-radio-button class="example-margin" value="female"
-            >Female</mat-radio-button
-          >
-          <mat-radio-button class="example-margin" value="all"
-            >LGBTQ+</mat-radio-button
-          >
-        </mat-radio-group>
-      </div>
-
-      }
-
-      <button mat-flat-button [disabled]="form.invalid">
-        @if (mode === 'login') { Login } @if (mode === 'register') { Get Start }
-      </button>
-    </form>
-    @if(errorFormServer!== ''){
-    <span class="error">{{ errorFormServer }}</span>
-    }
-    <div class="login-spacer">or</div>
-    @if(mode==='login'){
-    <div clss="toggle">
-      New to my app? <span (click)="toggleMode()">Sign Up</span>
+      <ul class="perks">
+        <li><mat-icon>verified_user</mat-icon> Your profile, your rules</li>
+        <li><mat-icon>filter_alt</mat-icon> Filters that actually filter</li>
+        <li><mat-icon>bolt</mat-icon> Set up in about a minute</li>
+      </ul>
     </div>
-    } @if(mode==='register'){
-    <div clss="toggle">
-      Already have an account? <span (click)="toggleMode()">Sign In</span>
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+  </aside>
+
+  <!-- ------------------------------------------------------------- form -->
+  <section class="auth__panel">
+    <div class="auth__card tn-rise">
+      <header class="auth__head">
+        <h1>{{ isRegister ? 'Create your account' : 'Welcome back' }}</h1>
+        <p>{{ isRegister ? 'It is free, and it takes a minute.' : 'Sign in to pick up where you left off.' }}</p>
+      </header>
+
+      <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
+        <div class="grid">
+          <mat-form-field appearance="outline" class="col-2">
+            <mat-label>Username</mat-label>
+            <mat-icon matIconPrefix>alternate_email</mat-icon>
+            <input matInput type="text" placeholder="yourname" formControlName="username"
+              (input)="updateErrorMessgae('username')" />
+            <mat-error>{{ errorMessages.username() }}</mat-error>
+          </mat-form-field>
+
+          @if (isRegister) {
+          <mat-form-field appearance="outline" class="col-2">
+            <mat-label>Display name</mat-label>
+            <mat-icon matIconPrefix>badge</mat-icon>
+            <input matInput type="text" placeholder="What should we call you?" formControlName="display_name"
+              (input)="updateErrorMessgae('display_name')" />
+            <mat-error>{{ errorMessages.display_name() }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="col-2">
+            <mat-label>Email (optional)</mat-label>
+            <mat-icon matIconPrefix>mail</mat-icon>
+            <input matInput type="email" placeholder="you@example.com" formControlName="email" />
+            <mat-hint>Only used to get you back in if you forget your password.</mat-hint>
+          </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline" [class.col-2]="!isRegister">
+            <mat-label>Password</mat-label>
+            <mat-icon matIconPrefix>lock</mat-icon>
+            <input matInput [type]="hidePassword() ? 'password' : 'text'" placeholder="••••••••"
+              formControlName="password" (input)="updateErrorMessgae('password')" />
+            <button mat-icon-button matIconSuffix type="button" (click)="hidePassword.set(!hidePassword())"
+              [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+              <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            <mat-error>{{ errorMessages.password() }}</mat-error>
+          </mat-form-field>
+
+          @if (isRegister) {
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm password</mat-label>
+            <mat-icon matIconPrefix>lock_reset</mat-icon>
+            <input matInput [type]="hideConfirm() ? 'password' : 'text'" placeholder="••••••••"
+              formControlName="confirm_password" (input)="updateErrorMessgae('confirm_password')" />
+            <button mat-icon-button matIconSuffix type="button" (click)="hideConfirm.set(!hideConfirm())"
+              [attr.aria-label]="hideConfirm() ? 'Show password' : 'Hide password'">
+              <mat-icon>{{ hideConfirm() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            <mat-error>{{ errorMessages.confirm_password() }}</mat-error>
+          </mat-form-field>
+          }
+        </div>
+
+        @if (isRegister && passwordValue) {
+        <div class="strength">
+          <div class="strength__bar">
+            <span [style.width.%]="passwordScore * 20" [attr.data-score]="passwordScore"></span>
+          </div>
+          <span class="strength__label">{{ passwordStrengthLabel }}</span>
+        </div>
+
+        <ul class="rules">
+          @for (rule of passwordRules; track rule.label) {
+          <li [class.is-met]="rule.test(passwordValue)">
+            <mat-icon>{{ rule.test(passwordValue) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+            {{ rule.label }}
+          </li>
+          }
+        </ul>
+        }
+
+        @if (isRegister) {
+        <div class="grid">
+          <mat-form-field appearance="outline" class="col-2">
+            <mat-label>Date of birth</mat-label>
+            <mat-icon matIconPrefix>cake</mat-icon>
+            <input matInput [min]="mindate" [max]="maxdate" [matDatepicker]="picker" formControlName="date_of_birth"
+              placeholder="You must be 18 or older" />
+            <mat-datepicker-toggle matIconSuffix [for]="picker" />
+            <mat-datepicker #picker startView="multi-year" [startAt]="startDate" />
+          </mat-form-field>
+        </div>
+
+        <fieldset class="choice">
+          <legend>I am</legend>
+          <div class="segmented">
+            @for (c of choices; track c.value) {
+            <button type="button" class="seg" [class.is-on]="choiceOf('gender') === c.value"
+              (click)="pick('gender', c.value)">
+              <mat-icon>{{ c.icon }}</mat-icon>{{ c.label }}
+            </button>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="choice">
+          <legend>I am looking for</legend>
+          <div class="segmented">
+            @for (c of choices; track c.value) {
+            <button type="button" class="seg" [class.is-on]="choiceOf('looking_for') === c.value"
+              (click)="pick('looking_for', c.value)">
+              <mat-icon>{{ c.icon }}</mat-icon>{{ c.label }}
+            </button>
+            }
+          </div>
+        </fieldset>
+        }
+
+        @if (errorFormServer !== '') {
+        <p class="server-error" role="alert">
+          <mat-icon>error</mat-icon>{{ errorFormServer }}
+        </p>
+        }
+
+        <button mat-flat-button class="tn-btn-gradient submit" type="submit"
+          [disabled]="form.invalid || submitting()">
+          {{ submitting() ? 'One moment…' : (isRegister ? 'Create account' : 'Sign in') }}
+        </button>
+
+        @if (!isRegister) {
+        <a class="forgot" routerLink="/forgot-password">Forgot your password?</a>
+        }
+      </form>
+
+      <div class="divider"><span>or</span></div>
+
+      <p class="switch">
+        {{ isRegister ? 'Already have an account?' : 'New to Tinner?' }}
+        <button type="button" (click)="toggleMode()">{{ isRegister ? 'Sign in' : 'Create one' }}</button>
+      </p>
     </div>
-    }
-  </div>
-</mat-card>
+  </section>
+</div>

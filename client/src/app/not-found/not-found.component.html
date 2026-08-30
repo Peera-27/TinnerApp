@@ -1,42 +1,19 @@
-<!-- <div class="room-bg">
-  <div class="container-fluid">
-
-    <div class="images">
-      <img class="bird_cage-img" src="https://cdn.pixabay.com/photo/2016/04/01/11/21/bird-1300304__480.png" alt="">
-      <a href="https://imgbb.com/"><img class="bird-img" src="https://i.ibb.co/KbKqH38/kukek-unscreen.gif"
-          alt="kukek-unscreen"></a>
-    </div>
-
-    <div class="text">
-      <h1>404<br>Oops! Nothing here</h1>
-      <h5>The Bird has flew away...</h5>
-    </div>
+<div class="oops">
+  <div class="oops__art" aria-hidden="true">
+    <span class="glow"></span>
+    <span class="code">404</span>
+    <span class="heart"><mat-icon>heart_broken</mat-icon></span>
   </div>
-</div> -->
 
-<link href='https://fonts.googleapis.com/css?family=Anton|Passion+One|PT+Sans+Caption' rel='stylesheet' type='text/css'>
+  <h1>This one got away</h1>
+  <p>The page you are after has been moved, deleted, or never existed in the first place.</p>
 
-<body>
-
-  <!-- Error Page -->
-  <div class="error">
-    <div class="container-floud">
-      <div class="col-xs-12 ground-color text-center">
-        <div class="container-error-404">
-          <div class="clip">
-            <div class="shadow"><span class="digit thirdDigit">4</span></div>
-          </div>
-          <div class="clip">
-            <div class="shadow"><span class="digit secondDigit">0</span></div>
-          </div>
-          <div class="clip">
-            <div class="shadow"><span class="digit firstDigit">4</span></div>
-          </div>
-          <div class="msg">🤴🏿<span class="triangle"></span></div>
-        </div>
-        <h2 class="h1">Sorry! Page not found</h2>
-      </div>
-    </div>
+  <div class="oops__actions">
+    <a class="btn btn--primary" routerLink="/">
+      <mat-icon>explore</mat-icon> Back to Discover
+    </a>
+    <button type="button" class="btn btn--ghost" (click)="back()">
+      <mat-icon>arrow_back</mat-icon> Go back
+    </button>
   </div>
-  <!-- Error Page -->
-</body>
+</div>

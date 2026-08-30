@@ -1,0 +1,107 @@
+.report__title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    mat-icon {
+        color: var(--tn-danger);
+    }
+}
+
+.report__body {
+    display: grid;
+    gap: 16px;
+}
+
+.report__lead {
+    margin: 0;
+    color: var(--tn-text-muted);
+    font-size: .88rem;
+    line-height: 1.5;
+}
+
+.report__reasons {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+
+    legend {
+        padding: 0 0 8px;
+        font-size: .8rem;
+        font-weight: 700;
+        color: var(--tn-text-muted);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+}
+
+.report__reason {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid var(--tn-border);
+    border-radius: var(--tn-r-md);
+    cursor: pointer;
+    font-size: .9rem;
+    transition: border-color .18s, background .18s;
+
+    input {
+        accent-color: var(--tn-brand-1);
+    }
+
+    &:hover {
+        border-color: var(--tn-border-strong);
+    }
+
+    &.is-on {
+        border-color: var(--tn-brand-1);
+        background: var(--tn-gradient-soft);
+    }
+}
+
+.report__detail {
+    display: grid;
+    gap: 7px;
+
+    span {
+        font-size: .8rem;
+        font-weight: 700;
+        color: var(--tn-text-muted);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid var(--tn-border);
+        border-radius: var(--tn-r-md);
+        background: var(--tn-surface-2);
+        color: var(--tn-text);
+        font: inherit;
+        font-size: .9rem;
+        resize: vertical;
+
+        &:focus {
+            outline: none;
+            border-color: var(--tn-brand-1);
+        }
+    }
+}
+
+.report__block {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: .86rem;
+    color: var(--tn-text-muted);
+    cursor: pointer;
+
+    input {
+        margin-top: 2px;
+        accent-color: var(--tn-brand-1);
+    }
+}

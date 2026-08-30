@@ -1,0 +1,38 @@
+<div class="tn-page">
+  <header class="tn-page-head">
+    <div>
+      <h1>Blocked people</h1>
+      <p>You and anyone here are hidden from each other. Unblock to undo that.</p>
+    </div>
+
+    <span class="count-pill">
+      <mat-icon>block</mat-icon>
+      <strong>{{ blocks().pagination.length ?? 0 }}</strong> blocked
+    </span>
+  </header>
+
+  @if (blocks().items.length > 0) {
+  <ul class="blocked">
+    @for (person of blocks().items; track person.id) {
+    <li class="row">
+      <img class="row__avatar" [src]="avatarOf(person)" [alt]="person.display_name ?? 'Member'"
+        loading="lazy" (error)="onImageError($event)" />
+      <div class="row__body">
+        <strong>{{ person.display_name }}</strong>
+        <small>&#64;{{ person.username }}</small>
+      </div>
+      <button mat-stroked-button type="button" (click)="unblock(person)">
+        <mat-icon>lock_open</mat-icon> Unblock
+      </button>
+    </li>
+    }
+  </ul>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="verified_user" heading="Nobody is blocked"
+      message="If someone makes you uncomfortable, open their profile and use Block — they disappear from your lists and you from theirs.">
+      <button mat-flat-button class="tn-btn-gradient" routerLink="/">Back to Discover</button>
+    </app-empty-state>
+  </div>
+  }
+</div>

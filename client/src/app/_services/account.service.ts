@@ -1,11 +1,24 @@
 import { inject, Injectable, signal } from '@angular/core'
 import { environment } from '../../environments/environment'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpContext, HttpContextToken } from '@angular/common/http'
 import { User } from '../_models/user'
 import { firstValueFrom } from 'rxjs'
 import { pareUserPhoto } from '../_helper/helper'
 import { Photo } from '../_models/photo'
 import { cacheManager } from '../_helper/cache'
+
+/** Session as it is stored. `refresh_token` is optional: a session saved before
+ *  refresh tokens existed still loads, it just cannot be renewed. */
+export interface Session {
+  user: User
+  token: string
+  refresh_token?: string
+}
+
+/** Marks the calls that must never be retried through a token refresh —
+ *  refreshing inside a refresh would loop. */
+export const SKIP_AUTH_REFRESH = new HttpContextToken<boolean>(() => false)
+export const skipAuthRefresh = () => new HttpContext().set(SKIP_AUTH_REFRESH, true)
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +28,7 @@ export class AccountService {
   private _baseApiurl = environment.baseUrl + 'api/account/'
   private _http = inject(HttpClient)
 
-  data = signal<{ user: User, token: string } | null>(null)
+  data = signal<Session | null>(null)
   constructor() {
     this.loadDataFromlocalStorage()
   }
@@ -73,6 +86,14 @@ export class AccountService {
 
   //#region login_and_register
   logout() {
+    // tell the server first, while the token is still in hand — otherwise the
+    // refresh token would stay valid for another month
+    const refresh_token = this.data()?.refresh_token
+    if (refresh_token) {
+      this._http.post(this._baseApiurl + 'logout', { refresh_token }, { context: skipAuthRefresh() })
+        .subscribe({ error: () => { } })
+    }
+
     localStorage.removeItem(this._key)
 
     this.data.set(null)
@@ -82,7 +103,7 @@ export class AccountService {
   async login(logindata: { username: string, password: string }): Promise<string> {
     try {
       const url = this._baseApiurl + 'login'
-      const response = this._http.post<{ user: User, token: string }>(url, logindata)
+      const response = this._http.post<Session>(url, logindata, { context: skipAuthRefresh() })
       const data = await firstValueFrom(response)
       data.user = pareUserPhoto(data.user)
       this.data.set(data)
@@ -95,7 +116,7 @@ export class AccountService {
   async register(registerdata: User): Promise<string> {
     try {
       const url = this._baseApiurl + 'register'
-      const response = this._http.post<{ user: User, token: string }>(url, registerdata)
+      const response = this._http.post<Session>(url, registerdata, { context: skipAuthRefresh() })
       const data = await firstValueFrom(response)
       data.user = pareUserPhoto(data.user)
       this.data.set(data)
@@ -103,6 +124,60 @@ export class AccountService {
       return ''
     } catch (error: any) {
       return error.error?.message
+    }
+  }
+
+  /**
+   * Trades the stored refresh token for a fresh pair. Returns false when the
+   * session is truly over, which is the interceptor's cue to sign out.
+   */
+  async refresh(): Promise<boolean> {
+    const refresh_token = this.data()?.refresh_token
+    if (!refresh_token) return false
+
+    try {
+      const pair = await firstValueFrom(this._http.post<{ token: string, refresh_token: string }>(
+        this._baseApiurl + 'refresh',
+        { refresh_token },
+        { context: skipAuthRefresh() },
+      ))
+
+      const current = this.data()
+      if (!current) return false
+      this.data.set({ ...current, token: pair.token, refresh_token: pair.refresh_token })
+      this.saveDataTolocalStorage()
+      return true
+    } catch {
+      return false
+    }
+  }
+  //#endregion
+  //#region password
+  async changePassword(current_password: string, new_password: string): Promise<string> {
+    try {
+      await firstValueFrom(this._http.patch(this._baseApiurl + 'password', { current_password, new_password }))
+      // every session was just revoked, this one included — the caller signs
+      // back in with the new password
+      return ''
+    } catch (error: any) {
+      return error.error?.message ?? 'Could not change your password'
+    }
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    // deliberately ignores failures: the answer is the same either way, so the
+    // form cannot be used to find out which addresses are registered
+    try {
+      await firstValueFrom(this._http.post(this._baseApiurl + 'forgot-password', { email }, { context: skipAuthRefresh() }))
+    } catch { }
+  }
+
+  async resetPassword(token: string, password: string): Promise<string> {
+    try {
+      await firstValueFrom(this._http.post(this._baseApiurl + 'reset-password', { token, password }, { context: skipAuthRefresh() }))
+      return ''
+    } catch (error: any) {
+      return error.error?.message ?? 'This reset link is no longer valid'
     }
   }
   //#endregion
@@ -115,12 +190,26 @@ export class AccountService {
   private loadDataFromlocalStorage() {
     const JSONstring = localStorage.getItem(this._key)
     if (JSONstring) {
-      const data = JSON.parse(JSONstring)
+      const data = JSON.parse(JSONstring) as Session
+      // avatar/photoOfTheDay are derived, not authoritative — recompute them so
+      // a session stored before the placeholder art changed does not keep
+      // pointing at an asset that no longer exists.
+      if (data?.user) data.user = pareUserPhoto(data.user)
       this.data.set(data)
     }
   }
   //#endregion
   //#region profile
+  /** My own record, including the email a listing never carries. */
+  async loadMe(): Promise<void> {
+    try {
+      const me = await firstValueFrom(this._http.get<User>(environment.baseUrl + 'api/account/me'))
+      this.setUser(pareUserPhoto({ ...this.data()?.user, ...me } as User))
+    } catch (error) {
+      console.error(`Error:loading my account ${error}`)
+    }
+  }
+
   async updateProfile(user: User): Promise<boolean> {
     const url = environment.baseUrl + 'api/user/'
     try {
@@ -128,7 +217,9 @@ export class AccountService {
       await firstValueFrom(response)
       const currentUserdata = this.data()
       if (currentUserdata) {
-        currentUserdata.user = user
+        // merge, never replace: the form only carries the editable fields, so
+        // assigning it wholesale would drop id, photos, following and avatar
+        currentUserdata.user = { ...currentUserdata.user, ...user }
         this.data.set(currentUserdata)
         this.saveDataTolocalStorage()
       }

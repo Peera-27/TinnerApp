@@ -32,12 +32,38 @@ export const routes: Routes = [
             {
                 path: 'followings',
                 loadComponent: () => import('./followings/followings.component').then(c => c.FollowingsComponent)
+            },
+            {
+                path: 'matches',
+                loadComponent: () => import('./matches/matches.component').then(c => c.MatchesComponent)
+            },
+            {
+                path: 'messages',
+                loadComponent: () => import('./messages/messages.component').then(c => c.MessagesComponent)
+            },
+            {
+                path: 'swipe',
+                loadComponent: () => import('./swipe/swipe.component').then(c => c.SwipeComponent)
+            },
+            {
+                path: 'blocked',
+                loadComponent: () => import('./blocked/blocked.component').then(c => c.BlockedComponent)
             }
         ]
     },
     {
         path: 'login',
         loadComponent: () => import('./login/login.component').then(c => c.LoginComponent)
+    },
+    // both password screens are for people who cannot sign in, so neither of
+    // them may sit behind the auth guard
+    {
+        path: 'forgot-password',
+        loadComponent: () => import('./forgot-password/forgot-password.component').then(c => c.ForgotPasswordComponent)
+    },
+    {
+        path: 'reset-password',
+        loadComponent: () => import('./reset-password/reset-password.component').then(c => c.ResetPasswordComponent)
     },
     {
         path: 'server-error',

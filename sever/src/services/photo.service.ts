@@ -1,8 +1,10 @@
-import mongoose from "mongoose"
+import { and, eq, ne } from "drizzle-orm"
 import { Cloudinary } from "../configs/cloudinary.config"
+import { db } from "../db"
+import { photos } from "../db/schema"
+import { isUuid } from "../helper/id.helper"
 import { ImageHelper } from "../helper/image.helper"
-import { Photo } from "../models/photo.model"
-import { User } from "../models/user.model"
+import { toPhoto } from "../helper/mapper.helper"
 import { photo } from "../types/photo.type"
 
 export const PhotoService = {
@@ -11,70 +13,76 @@ export const PhotoService = {
         const isFileValid = ImageHelper.isImage(buffer)
         if (!isFileValid)
             throw new Error("Image must be .jpeg or .png")
-        const base64 = Buffer.from(buffer).toString('base64')
+
+        const base64 = Buffer.from(buffer).toString("base64")
         const dataURI = `data:${file.type};base64,${base64}`
         const cloudPhoto = await Cloudinary.uploader.upload(dataURI, {
-            folder: 'class-example-user-images',
-            resource_type: 'auto',
+            folder: "class-example-user-images",
+            resource_type: "auto",
             transformation: [{
                 width: 500,
                 height: 500,
-                crop: 'fill',
-                gravity: 'face',
-
-            }]
+                crop: "fill",
+                gravity: "face",
+            }],
         })
 
         if (!cloudPhoto.public_id || !cloudPhoto.url)
             throw new Error("Something went wrong , try again later!!!")
 
-        const uploadPhoto = new Photo({
-            user: new mongoose.Types.ObjectId(user_id),
+        // the photo row carries user_id now, so there is no second write to keep
+        // a `photos` array on the user in sync
+        const [uploaded] = await db.insert(photos).values({
+            user_id,
             url: cloudPhoto.secure_url,
             public_id: cloudPhoto.public_id,
+        }).returning()
 
-        })
-
-        await uploadPhoto.save()
-        await User.findByIdAndUpdate(
-            user_id,
-            { $push: { photos: uploadPhoto._id } }
-        )
-        return uploadPhoto.toPhoto()
+        return toPhoto(uploaded)
     },
 
     getPhotos: async function (user_id: string): Promise<photo[]> {
-        const photoDocs = await Photo.find({ user: user_id }).exec()
-        return photoDocs.map(doc => doc.toPhoto())
+        const rows = await db.select().from(photos).where(eq(photos.user_id, user_id))
+        return rows.map(toPhoto)
     },
 
-    delete: async function (photo_id: string): Promise<boolean> {
-        const doc = await Photo.findById(photo_id).exec()
-        if (!doc)
+    delete: async function (photo_id: string, user_id: string): Promise<boolean> {
+        if (!isUuid(photo_id))
             throw new Error(`photo ${photo_id} not existing`)
 
-        await User.findByIdAndUpdate(doc.user, {
-            $pull: { photos: photo_id }
-        })
-        await Photo.findByIdAndDelete(photo_id)
+        // scoped to the caller so one user cannot delete another user's photo
+        const [deleted] = await db.delete(photos)
+            .where(and(eq(photos.id, photo_id), eq(photos.user_id, user_id)))
+            .returning()
 
-        await Cloudinary.uploader.destroy(doc.public_id)
+        if (!deleted)
+            throw new Error(`photo ${photo_id} not existing`)
 
+        await Cloudinary.uploader.destroy(deleted.public_id)
         return true
     },
 
     setAvatar: async function (photo_id: string, user_id: string): Promise<boolean> {
-        await Photo.updateMany(
-            { user: new mongoose.Types.ObjectId(user_id) },
-            { $set: { is_avatar: false } }
-        )
-        const result = await Photo.findByIdAndUpdate(photo_id,
-            { $set: { is_avatar: true } },
-            //{ new: true }
-        )
+        if (!isUuid(photo_id))
+            throw new Error("Set Avatar Failed !!")
 
-        return !!result
+        // both writes land together: the old avatar is never cleared unless the
+        // new one is actually set
+        return db.transaction(async (tx) => {
+            const [promoted] = await tx.update(photos)
+                .set({ is_avatar: true })
+                .where(and(eq(photos.id, photo_id), eq(photos.user_id, user_id)))
+                .returning()
+
+            // nothing was written when the photo is not the caller's, so no rollback needed
+            if (!promoted)
+                return false
+
+            await tx.update(photos)
+                .set({ is_avatar: false })
+                .where(and(eq(photos.user_id, user_id), ne(photos.id, photo_id)))
+
+            return true
+        })
     },
-
-
 }

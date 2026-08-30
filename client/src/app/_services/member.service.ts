@@ -3,7 +3,7 @@ import { inject, Injectable, signal } from '@angular/core'
 import { environment } from '../../environments/environment'
 import { User } from '../_models/user'
 import { cacheManager } from '../_helper/cache'
-import { Paginator, UserQueryPagination, default_paginator } from '../_models/pagination'
+import { Paginator, UserQueryPagination, createPaginator } from '../_models/pagination'
 import { pareQuery, pareUserPhoto } from '../_helper/helper'
 import { firstValueFrom } from 'rxjs'
 
@@ -17,7 +17,7 @@ export class MemberService {
   private url = environment.baseUrl + 'api/' //user
 
 
-  paginator = signal<Paginator<UserQueryPagination, User>>(default_paginator)
+  paginator = signal<Paginator<UserQueryPagination, User>>(createPaginator())
 
   private getData(category: dataCategory) {
     const pagination = this.paginator().pagination
@@ -35,6 +35,8 @@ export class MemberService {
     const url = this.url + 'user/' + pareQuery(pagination)
     this.http.get<Paginator<UserQueryPagination, User>>(url).subscribe({
       next: response => {
+        // the API returns raw photo rows; the card needs avatar/photoOfTheDay
+        response.items = response.items.map(pareUserPhoto)
         key = cacheManager.createKey(pagination)
         cacheManager.save(key, response, category)
         this.paginator.set(response)

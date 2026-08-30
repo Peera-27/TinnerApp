@@ -1,57 +1,36 @@
-<div class="member-container">
-  <mat-accordion>
-    <mat-expansion-panel hideToggle>
-      <mat-expansion-panel-header>
-        <mat-panel-title> Search </mat-panel-title>
-        <!-- <mat-panel-description> This is a summary of the content </mat-panel-description> -->
-      </mat-expansion-panel-header>
-      <form (ngSubmit)="onSearch()" #ngForm autocomplete="off">
-        <mat-form-field appearance="outline">
-          <mat-label>Username</mat-label>
-          <input matInput type="text" name="username" [(ngModel)]="paginator().pagination.username" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Looking for</mat-label>
-          <mat-select [(ngModel)]="paginator().pagination.looking_for" name="looking_for">
-            <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
-            <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
-            <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Gender</mat-label>
-          <mat-select [(ngModel)]="paginator().pagination.gender" name="gender">
-            <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
-            <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
-            <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Min Age</mat-label>
-          <input matInput type="number" name="min_age" [(ngModel)]="paginator().pagination.min_age" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Max Age</mat-label>
-          <input matInput type="number" name="max_age" [(ngModel)]="paginator().pagination.max_age" />
-        </mat-form-field>
-
-        <button mat-raised-button type="submit">Search</button>
-        <button mat-raised-button type="button" (click)="onReset()">
-          Reset
-        </button>
-      </form>
-    </mat-expansion-panel>
-  </mat-accordion>
-  <div class="memberlist">
-    @for (member of paginator().items; track member.id) {
-    <div class="member-itemiv">
-      <app-member-card [member]="member"></app-member-card>
+<div class="tn-page tn-page--wide">
+  <header class="tn-page-head">
+    <div>
+      <h1>Discover</h1>
+      <p>Browse people who are looking for what you are looking for.</p>
     </div>
+
+    <span class="count-pill">
+      <mat-icon>groups</mat-icon>
+      <strong>{{ paginator().pagination.length ?? 0 }}</strong> people found
+    </span>
+  </header>
+
+  <app-filter-bar [pagination]="paginator().pagination" (search)="onSearch()" (resetFilters)="onReset()" />
+
+  @if (paginator().items.length > 0) {
+  <div class="list-grid">
+    @for (member of paginator().items; track member.id) {
+    <app-member-card [member]="member" />
     }
   </div>
 
-  <mat-paginator [length]="paginator().pagination.length" [pageSize]="paginator().pagination.pageSize"
-    [pageSizeOptions]="pageSize" aria-label="Select page" (page)="onPageChnage($event)"></mat-paginator>
+  <div class="list-foot">
+    <mat-paginator [length]="paginator().pagination.length" [pageSize]="paginator().pagination.pageSize"
+      [pageIndex]="(paginator().pagination.currentPage ?? 1) - 1" [pageSizeOptions]="pageSize"
+      aria-label="Select page" (page)="onPageChnage($event)" />
+  </div>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="person_search" heading="Nobody matches those filters"
+      message="Try widening the age range, or clear the filters to see everyone on Tinner.">
+      <button mat-flat-button class="tn-btn-gradient" (click)="onReset()">Clear filters</button>
+    </app-empty-state>
+  </div>
+  }
 </div>

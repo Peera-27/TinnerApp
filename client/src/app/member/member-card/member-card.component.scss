@@ -1,52 +1,318 @@
-@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,300..700,0..1,0&icon_names=favorite";
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: var(--tn-r-lg);
+    background: var(--tn-surface);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-2);
+    overflow: hidden;
+    transition: transform .28s var(--tn-ease), box-shadow .28s var(--tn-ease), border-color .28s;
 
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--tn-sh-4);
+        border-color: color-mix(in srgb, var(--tn-brand-1) 40%, var(--tn-border));
 
-
-.icon {
-    font-family: 'Material Symbols Outlined';
-    // font-weight: 400;
-    font-size: 2em;
+        .card__media img {
+            transform: scale(1.06);
+        }
+    }
 }
 
-.fill {
-    font-variation-settings: 'FILL' 1;
+.card.is-matched {
+    border-color: transparent;
+    box-shadow: var(--tn-sh-brand);
 }
 
-.pulse {
-    animation: pulse 3s infinite;
-}
+/* Covers the whole card for a couple of seconds after a mutual like. */
+.card__match {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 4px;
+    padding: 16px;
+    text-align: center;
+    color: #fff;
+    background: var(--tn-gradient-warm);
+    animation: tn-match-in .35s var(--tn-ease) both;
 
-@keyframes pulse {
-    0% {
-        font-variation-settings: 'wght' 100, 'FILL' 1;
+    mat-icon {
+        font-size: 46px;
+        width: 46px;
+        height: 46px;
+        font-variation-settings: 'FILL' 1;
+        animation: tn-match-beat 1s var(--tn-ease) infinite;
     }
 
-    50% {
-        font-variation-settings: 'wght' 700, 'FILL' 1;
+    strong {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    small {
+        font-size: .78rem;
+        opacity: .88;
+    }
+}
+
+@keyframes tn-match-in {
+    from {
+        opacity: 0;
+        transform: scale(1.06);
+    }
+}
+
+@keyframes tn-match-beat {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.16);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .card__match,
+    .card__match mat-icon {
+        animation: none;
+    }
+}
+
+/* ------------------------------------------------------------- media */
+.card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--tn-surface-3);
+    text-decoration: none;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform .5s var(--tn-ease);
+    }
+}
+
+.card__scrim {
+    position: absolute;
+    inset: 40% 0 0;
+    background: linear-gradient(to top, rgba(12, 8, 18, .88) 8%, rgba(12, 8, 18, .35) 45%, transparent);
+    pointer-events: none;
+}
+
+.card__identity {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 14px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: #fff;
+
+    strong {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        letter-spacing: -.01em;
+    }
+
+    small {
+        flex: 1 1 100%;
+        font-size: .76rem;
+        opacity: .78;
+    }
+}
+
+.card__age {
+    padding: 2px 9px;
+    border-radius: var(--tn-r-full);
+    background: rgba(255, 255, 255, .18);
+    backdrop-filter: blur(4px);
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+/* ------------------------------------------------------------- like */
+.like {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .22);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .18);
+    color: #fff;
+    cursor: pointer;
+    transition: transform .2s var(--tn-ease), background .2s, color .2s;
+
+    mat-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+        transition: font-variation-settings .2s;
+    }
+
+    &:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, .34);
+    }
+
+    &.is-on {
+        background: #fff;
+        color: var(--tn-brand-1);
+
+        mat-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 600;
+        }
+    }
+
+    &.is-burst {
+        animation: like-burst .7s var(--tn-ease);
+    }
+}
+
+@keyframes like-burst {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 77, 109, .55);
+    }
+
+    40% {
+        transform: scale(1.35);
     }
 
     100% {
-        font-variation-settings: 'wght' 100, 'FILL' 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 26px rgba(255, 77, 109, 0);
     }
 }
 
+/* ------------------------------------------------------------- body */
+.card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 auto;
+    padding: 16px;
+}
 
-.member-card {
-    margin: 1em;
+.card__looking {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    color: var(--tn-text-muted);
+    font-size: .84rem;
+    font-weight: 600;
 
-    .header-image {
-        background-size: cover;
+    mat-icon {
+        font-size: 17px;
+        width: 17px;
+        height: 17px;
+        color: var(--tn-brand-1);
+    }
+}
+
+.card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow: hidden;
+    max-height: 56px;
+}
+
+.card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 4px;
+    color: var(--tn-brand-1);
+    font-size: .86rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    mat-icon {
+        font-size: 17px;
+        width: 17px;
+        height: 17px;
+        transition: transform .2s var(--tn-ease);
     }
 
+    &:hover {
+        text-decoration: none;
+
+        mat-icon {
+            transform: translateX(4px);
+        }
+    }
 }
 
-.photoOfTheDay {
-    margin: 1em;
-    max-width: 300px;
-    width: 300px;
+/* ------------------------------------------------------------- presence */
+.card__online {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 8px;
+    border-radius: var(--tn-r-full);
+    background: color-mix(in srgb, #0b0a10 62%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    pointer-events: none;
+
+    i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--tn-success);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--tn-success) 70%, transparent);
+        animation: tn-pulse 2s var(--tn-ease) infinite;
+    }
 }
 
-* {
-    font-family: 'HYWenHei 85W';
+@keyframes tn-pulse {
+    70% {
+        box-shadow: 0 0 0 7px transparent;
+    }
 
+    100% {
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card__online i {
+        animation: none;
+    }
 }

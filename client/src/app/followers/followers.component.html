@@ -1,57 +1,36 @@
-<div class="member-container">
-    <mat-accordion>
-        <mat-expansion-panel hideToggle>
-            <mat-expansion-panel-header>
-                <mat-panel-title> Search </mat-panel-title>
-                <!-- <mat-panel-description> This is a summary of the content </mat-panel-description> -->
-            </mat-expansion-panel-header>
-            <form (ngSubmit)="onSearch()" #ngForm autocomplete="off">
-                <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
-                    <input matInput type="text" name="username" [(ngModel)]="followers().pagination.username" />
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Looking for</mat-label>
-                    <mat-select [(ngModel)]="followers().pagination.looking_for" name="looking_for">
-                        <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
-                        <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
-                        <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Gender</mat-label>
-                    <mat-select [(ngModel)]="followers().pagination.gender" name="gender">
-                        <mat-option value="male"><mat-icon>male</mat-icon>Male</mat-option>
-                        <mat-option value="female"><mat-icon>female</mat-icon>Female</mat-option>
-                        <mat-option value="all"><mat-icon>transgender</mat-icon>LGBTQ+</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Min Age</mat-label>
-                    <input matInput type="number" name="min_age" [(ngModel)]="followers().pagination.min_age" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Max Age</mat-label>
-                    <input matInput type="number" name="max_age" [(ngModel)]="followers().pagination.max_age" />
-                </mat-form-field>
-
-                <button mat-raised-button type="submit">Search</button>
-                <button mat-raised-button type="button" (click)="onReset()">
-                    Reset
-                </button>
-            </form>
-        </mat-expansion-panel>
-    </mat-accordion>
-    <div class="memberlist">
-        @for (member of followers().items; track member.id) {
-        <div class="member-itemiv">
-            <app-member-card [member]="member"></app-member-card>
-        </div>
-        }
+<div class="tn-page tn-page--wide">
+  <header class="tn-page-head">
+    <div>
+      <h1>Your followers</h1>
+      <p>People who tapped the heart on your profile.</p>
     </div>
 
+    <span class="count-pill">
+      <mat-icon>group</mat-icon>
+      <strong>{{ followers().pagination.length ?? 0 }}</strong> followers
+    </span>
+  </header>
+
+  <app-filter-bar [pagination]="followers().pagination" (search)="onSearch()" (resetFilters)="onReset()" />
+
+  @if (followers().items.length > 0) {
+  <div class="list-grid">
+    @for (member of followers().items; track member.id) {
+    <app-member-card [member]="member" />
+    }
+  </div>
+
+  <div class="list-foot">
     <mat-paginator [length]="followers().pagination.length" [pageSize]="followers().pagination.pageSize"
-        [pageSizeOptions]="pageSize" aria-label="Select page" (page)="onPageChnage($event)"></mat-paginator>
+      [pageIndex]="(followers().pagination.currentPage ?? 1) - 1" [pageSizeOptions]="pageSize"
+      aria-label="Select page" (page)="onPageChnage($event)" />
+  </div>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="favorite" heading="No followers yet"
+      message="Add a couple of photos and fill in your introduction — profiles that feel complete get noticed first.">
+      <button mat-flat-button class="tn-btn-gradient" routerLink="/profile">Polish my profile</button>
+    </app-empty-state>
+  </div>
+  }
 </div>

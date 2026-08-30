@@ -7,18 +7,18 @@ import { NgxSpinnerService } from 'ngx-spinner'
 export class LoadingService {
   loadingRequestCount = 0
   private spinner = inject(NgxSpinnerService)
-  constructor() { }
+
   loading() {
     this.loadingRequestCount++
+    // No `type`: the built-in animations are not loaded, the branded heart in
+    // app.component.html is projected into the overlay instead.
     this.spinner.show(undefined, {
-      type: "ball-8bits",
-      bdColor: 'rgba(183, 179, 179, 0.8)',
-      color: 'rgba(15, 63, 108, 0.8)',
+      bdColor: 'rgba(14, 12, 19, 0.66)',
       fullScreen: true,
-      size: "large"
-
+      size: 'medium'
     })
   }
+
   idle() {
     this.loadingRequestCount--
     if (this.loadingRequestCount <= 0) {

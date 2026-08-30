@@ -1,28 +1,51 @@
-<mat-card class="example-card" appearance="outlined">
-  <mat-card-header>
-    <div mat-card-avatar class="header-image"></div>
-    <p>{{ member().display_name }}</p>
-    <mat-card-subtitle>{{ member().username }}</mat-card-subtitle>
-  </mat-card-header>
-  <img class="photoOfTheDay" mat-card-image [src]="member().photoOfTheDay"
-    alt="Photo of a {{ member().display_name }}" />
-  <mat-card-content>
-    <p>🤡</p>
-    <p>{{ member().age }} years</p>
-    <p>{{ member().looking_for }}</p>
-    <p>{{ member().interest }}</p>
-  </mat-card-content>
+<article class="card" [class.is-matched]="matched()">
+  @if (matched()) {
+  <div class="card__match" role="status">
+    <mat-icon>favorite</mat-icon>
+    <strong>It's a match!</strong>
+    <small>You both hearted each other</small>
+  </div>
+  }
 
-  <mat-card-actions>
-    <button mat-button (click)="togglelike()">
-      @if (isfollowing) {
-      <span class="icon fill pulse"> favorite</span>
-      }
-      @if (!isfollowing) {
-      <span class="icon"> favorite</span>
-      }
-    </button>
-    <button mat-button routerLink="/members-profile/{{member().username}}">More Dtail</button>
-  </mat-card-actions>
+  <a class="card__media" routerLink="/members-profile/{{ member().username }}"
+    [attr.aria-label]="'View ' + member().display_name">
+    <img [src]="photo()" [alt]="member().display_name ?? 'Member photo'" loading="lazy" (error)="onImageError($event)" />
+    <span class="card__scrim"></span>
 
-</mat-card>
+    @if (isOnline()) {
+    <span class="card__online"><i></i>Online</span>
+    }
+
+    <span class="card__identity">
+      <strong>{{ member().display_name }}</strong>
+      @if (member().age) {
+      <span class="card__age">{{ member().age }}</span>
+      }
+      <small>&#64;{{ member().username }}</small>
+    </span>
+  </a>
+
+  <button type="button" class="like" [class.is-on]="isfollowing()" [class.is-burst]="justLiked()"
+    (click)="togglelike()" [matTooltip]="isfollowing() ? 'Unfollow' : 'Follow'"
+    [attr.aria-pressed]="isfollowing()" [attr.aria-label]="isfollowing() ? 'Unfollow' : 'Follow'">
+    <mat-icon>favorite</mat-icon>
+  </button>
+
+  <div class="card__body">
+    <p class="card__looking">
+      <mat-icon>search</mat-icon>{{ lookingFor() }}
+    </p>
+
+    @if (tags().length) {
+    <div class="card__tags">
+      @for (tag of tags(); track tag) {
+      <span class="tn-chip">{{ tag }}</span>
+      }
+    </div>
+    }
+
+    <a class="card__more" routerLink="/members-profile/{{ member().username }}">
+      View profile <mat-icon>arrow_forward</mat-icon>
+    </a>
+  </div>
+</article>

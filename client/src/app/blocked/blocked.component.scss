@@ -1,0 +1,44 @@
+@use '../_shared/list-page';
+
+.blocked {
+    list-style: none;
+    margin: 26px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: var(--tn-r-lg);
+    background: var(--tn-surface);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-1);
+    animation: tn-rise .45s var(--tn-ease) both;
+}
+
+.row__avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 auto;
+    border-radius: var(--tn-r-full);
+    object-fit: cover;
+    background: var(--tn-surface-3);
+    filter: grayscale(1);
+    opacity: .75;
+}
+
+.row__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+
+    small {
+        color: var(--tn-text-muted);
+        font-size: .8rem;
+    }
+}

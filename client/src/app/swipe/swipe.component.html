@@ -1,0 +1,96 @@
+<div class="tn-page swipe">
+  <header class="tn-page-head">
+    <div>
+      <h1>Swipe</h1>
+      <p>Heart the ones you like, skip the ones you don't. Nobody is told when you skip.</p>
+    </div>
+  </header>
+
+  @if (top(); as card) {
+  <div class="deck">
+    @if (behind(); as next) {
+    <article class="swipe-card swipe-card--behind" aria-hidden="true">
+      <img [src]="photo(next)" alt="" (error)="onImageError($event)" />
+      <span class="swipe-card__scrim"></span>
+    </article>
+    }
+
+    <article class="swipe-card" [style]="cardStyle()" [class.is-leaving]="leaving()"
+      (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp()" (pointercancel)="onPointerUp()">
+      <img [src]="photo(card)" [alt]="card.display_name ?? 'Member photo'" (error)="onImageError($event)"
+        draggable="false" />
+      <span class="swipe-card__scrim"></span>
+
+      @if (isOnline(card)) {
+      <span class="swipe-card__online"><i></i>Online</span>
+      }
+
+      @if (intent() === 'like') {
+      <span class="stamp stamp--like">LIKE</span>
+      }
+      @if (intent() === 'pass') {
+      <span class="stamp stamp--pass">NOPE</span>
+      }
+
+      <div class="swipe-card__body">
+        <h2>
+          {{ card.display_name }}
+          @if (card.age) {<span class="swipe-card__age">{{ card.age }}</span>}
+        </h2>
+        @if (card.location) {
+        <p class="swipe-card__where"><mat-icon>location_on</mat-icon>{{ card.location }}</p>
+        }
+        @if (card.introduction) {
+        <p class="swipe-card__bio">{{ card.introduction }}</p>
+        }
+        @if (tags(card).length) {
+        <div class="swipe-card__tags">
+          @for (tag of tags(card); track tag) {
+          <span class="tn-chip">{{ tag }}</span>
+          }
+        </div>
+        }
+        <a class="swipe-card__more" routerLink="/members-profile/{{ card.username }}">
+          See full profile <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <div class="controls">
+    <button type="button" class="ctrl ctrl--pass" (click)="pass()" matTooltip="Skip" aria-label="Skip">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button type="button" class="ctrl ctrl--undo" (click)="undo()" [disabled]="!canUndo()"
+      matTooltip="Undo the last skip" aria-label="Undo the last skip">
+      <mat-icon>undo</mat-icon>
+    </button>
+    <button type="button" class="ctrl ctrl--like" (click)="like()" matTooltip="Like" aria-label="Like">
+      <mat-icon>favorite</mat-icon>
+    </button>
+  </div>
+
+  <p class="hint">Drag the card, or use the buttons.</p>
+  } @else if (loading()) {
+  <p class="hint hint--loading">Finding people…</p>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="done_all" heading="That's everyone for now"
+      message="You have been through every profile that matches your filters. New people show up here as they join.">
+      <button mat-flat-button class="tn-btn-gradient" routerLink="/">Back to Discover</button>
+    </app-empty-state>
+  </div>
+  }
+
+  @if (matched(); as person) {
+  <div class="match-flash" role="status">
+    <mat-icon>favorite</mat-icon>
+    <strong>It's a match!</strong>
+    <span>You and {{ person.display_name }} liked each other</span>
+    <a class="match-flash__cta" routerLink="/members-profile/{{ person.username }}" [queryParams]="{ chat: 1 }">
+      Say hello
+    </a>
+  </div>
+  }
+</div>

@@ -1,30 +1,49 @@
-<div class="photo-container">
-  <div class="upload-photo">
-    <button mat-raised-button (click)="openAddphotoDialog()">
-      <mat-icon>add</mat-icon> New Photo
-    </button>
-  </div>
+<div class="photos">
+  <button type="button" class="tile tile--add" (click)="openAddphotoDialog()">
+    <span class="tile__plus"><mat-icon>add_photo_alternate</mat-icon></span>
+    <strong>Add a photo</strong>
+    <small>JPG or PNG</small>
+  </button>
 
-  @for(photo of user().photos; track photo.id) {
-  <mat-card class="example-card" appearance="outlined">
-    <mat-card-header>
-      <p>{{ photo.create_at | timeago : true }}</p>
-    </mat-card-header>
+  @for (photo of user().photos ?? []; track photo.id) {
+  <figure class="tile">
+    <img [src]="photo.url" [alt]="'Photo of ' + user().display_name" loading="lazy" />
 
-    <img mat-card-image src="{{ photo.url }}" alt="Photo of {{ user().display_name }}" class="img-thumb" />
+    @if (photo.is_avatar) {
+    <span class="badge"><mat-icon>verified</mat-icon> Avatar</span>
+    }
 
-    <mat-card-actions>
-      @if (photo.is_avatar) {
-      <p class="avatar"><mat-icon>verified</mat-icon> Avatar</p>
-      } @else {
-      <button class="set-avatar" mat-button (click)="setAvatar(photo.id)">
-        Set as Avatar
-      </button>
-      <button class="delete-photo" mat-button (click)="deletePhoto(photo.id)">
-        DELETE
-      </button>
-      }
-    </mat-card-actions>
-  </mat-card>
+    @if (pendingDelete() === photo.id) {
+    <div class="overlay overlay--confirm">
+      <p>Delete this photo?</p>
+      <div class="overlay__row">
+        <button type="button" class="pill pill--danger" (click)="confirmDelete(photo.id)">Delete</button>
+        <button type="button" class="pill" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+    } @else {
+    <figcaption class="overlay">
+      <time class="overlay__time">{{ photo.create_at | timeago : true }}</time>
+      <div class="overlay__row">
+        @if (!photo.is_avatar) {
+        <button type="button" class="pill" (click)="setAvatar(photo.id)" matTooltip="Use as your avatar">
+          <mat-icon>account_circle</mat-icon> Set avatar
+        </button>
+        <button type="button" class="pill pill--icon" (click)="askDelete(photo.id)" aria-label="Delete photo"
+          matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+        }
+      </div>
+    </figcaption>
+    }
+  </figure>
   }
 </div>
+
+@if ((user().photos?.length ?? 0) === 0) {
+<app-empty-state icon="photo_camera" heading="Your gallery is empty"
+  message="Profiles with photos get far more attention. Add one or two — you can change them any time.">
+  <button mat-flat-button class="tn-btn-gradient" (click)="openAddphotoDialog()">Upload your first photo</button>
+</app-empty-state>
+}

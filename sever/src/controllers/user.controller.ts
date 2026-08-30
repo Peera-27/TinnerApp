@@ -1,4 +1,5 @@
-import Elysia, { t } from "elysia"
+import Elysia, { error, t } from "elysia"
+import { isUuid } from "../helper/id.helper"
 import { AuthMiddleWare, AuthPayload } from "../middlewares/auth.middleware"
 import { UserService } from "../services/user.service"
 import { UserDto } from "../types/user.type"
@@ -10,8 +11,56 @@ export const UserController = new Elysia({
     .use(UserDto)
     .use(AuthMiddleWare)
 
-    .get('/:username', ({ params: { username } }) => {
-        return UserService.getByuserName(username)
+    // static segments are declared before `/:username` so none of them can be
+    // read as somebody's name
+    .get('/deck', ({ query, Auth }) => {
+        const user_id = (Auth.payload as AuthPayload).id
+        return UserService.getDeck(query, user_id)
+    }, {
+        detail: { summary: "Swipe deck — everyone not yet liked or passed" },
+        query: "pagination",
+        response: "users",
+        isSignIn: true,
+    })
+
+    .post('/pass', async ({ body: { target_id }, set, Auth }) => {
+        if (!isUuid(target_id)) throw error(400)
+
+        const user_id = (Auth.payload as AuthPayload).id
+        try {
+            await UserService.pass(user_id, target_id)
+            set.status = "No Content"
+        } catch (err) {
+            set.status = "Bad Request"
+            throw err
+        }
+    }, {
+        detail: { summary: "Pass on someone from the deck" },
+        body: "target_id",
+        isSignIn: true,
+    })
+
+    .delete('/pass/:target_id', async ({ params: { target_id }, set, Auth }) => {
+        if (!isUuid(target_id)) throw error(400)
+
+        const user_id = (Auth.payload as AuthPayload).id
+        await UserService.unpass(user_id, target_id)
+        set.status = "No Content"
+    }, {
+        detail: { summary: "Undo a pass" },
+        params: t.Object({ target_id: t.String() }),
+        isSignIn: true,
+    })
+
+    .get('/:username', async ({ params: { username }, Auth }) => {
+        const user_id = (Auth.payload as AuthPayload).id
+        try {
+            return await UserService.getByuserName(username, user_id)
+        } catch {
+            // a name nobody has and a name hidden behind a block answer alike,
+            // and both are a 404 rather than the 500 a raw throw used to give
+            throw error(404)
+        }
     }, {
         detail: { summary: "Get User By Username" },
         response: "user",

@@ -1,0 +1,36 @@
+<div class="tn-page tn-page--wide">
+  <header class="tn-page-head">
+    <div>
+      <h1>Your matches</h1>
+      <p>You hearted them and they hearted you back — the feeling is mutual.</p>
+    </div>
+
+    <span class="count-pill">
+      <mat-icon>favorite</mat-icon>
+      <strong>{{ matches().pagination.length ?? 0 }}</strong> matches
+    </span>
+  </header>
+
+  <app-filter-bar [pagination]="matches().pagination" (search)="onSearch()" (resetFilters)="onReset()" />
+
+  @if (matches().items.length > 0) {
+  <div class="list-grid">
+    @for (member of matches().items; track member.id) {
+    <app-member-card [member]="member" />
+    }
+  </div>
+
+  <div class="list-foot">
+    <mat-paginator [length]="matches().pagination.length" [pageSize]="matches().pagination.pageSize"
+      [pageIndex]="(matches().pagination.currentPage ?? 1) - 1" [pageSizeOptions]="pageSize"
+      aria-label="Select page" (page)="onPageChnage($event)" />
+  </div>
+  } @else {
+  <div class="list-empty">
+    <app-empty-state icon="favorite" heading="No matches yet"
+      message="A match happens when someone you hearted hearts you back. Keep discovering — it only takes one.">
+      <button mat-flat-button class="tn-btn-gradient" routerLink="/">Start discovering</button>
+    </app-empty-state>
+  </div>
+  }
+</div>

@@ -1,20 +1,39 @@
-<h3 mat-dialog-title>Upload Photo</h3>
-<mat-dialog-content>
-  <div class="container">
-    <div class="img-preview" *ngIf="imgPreview()">
-      <img [src]="imgPreview()" alt="Upload Photo" />
-    </div>
-    <p *ngIf="imgFile">{{ imgFile.name }}</p>
-    <p *ngIf="errMessage()" class="error-message">{{ errMessage() }}</p>
-  </div>
+<h3 mat-dialog-title>Add a photo</h3>
 
-  <input #filePicker type="file" (change)="onImgpicked($event)" accept=".jpg,.png" />
-  <mat-dialog-actions>
-    <button mat-raised-button type="button" (click)="filePicker.click()">
-      Pick Image
-    </button>
-    <button type="submit" mat-raised-button (click)="onSubmit()" [disabled]="!imgFile">
-      Upload
-    </button>
-  </mat-dialog-actions>
+<mat-dialog-content>
+  <input #filePicker type="file" class="hidden-input" (change)="onImgpicked($event)" accept=".jpg,.jpeg,.png" />
+
+  @if (!imgPreview()) {
+  <div class="dropzone" [class.is-dragging]="dragging()" (dragover)="onDragOver($event)" (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)" (click)="filePicker.click()" role="button" tabindex="0"
+    (keydown.enter)="filePicker.click()">
+    <span class="dropzone__icon"><mat-icon>cloud_upload</mat-icon></span>
+    <strong>Drop an image here</strong>
+    <span class="dropzone__hint">or click to browse — JPG or PNG, up to 5&nbsp;MB</span>
+  </div>
+  } @else {
+  <figure class="preview">
+    <img [src]="imgPreview()" alt="Preview of the photo you are about to upload" />
+    <figcaption>
+      <div>
+        <strong>{{ imgFile()?.name }}</strong>
+        <small>{{ formatSize(imgFile()?.size ?? 0) }}</small>
+      </div>
+      <button type="button" class="swap" (click)="filePicker.click()">
+        <mat-icon>swap_horiz</mat-icon> Choose another
+      </button>
+    </figcaption>
+  </figure>
+  }
+
+  @if (errMessage()) {
+  <p class="error" role="alert"><mat-icon>error</mat-icon>{{ errMessage() }}</p>
+  }
 </mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button class="tn-btn-gradient" type="button" (click)="onSubmit()" [disabled]="!imgFile()">
+    Upload photo
+  </button>
+</mat-dialog-actions>

@@ -14,8 +14,9 @@ export const LikeController = new Elysia({
     .put('/', async ({ body: { target_id }, set, Auth }) => {
         try {
             const user_id = (Auth.payload as AuthPayload).id
-            await LikeService.toggleLike(user_id, target_id)
-            set.status = "No Content"
+            // answers with the new state instead of 204: the caller needs to know
+            // whether this like completed a match
+            return await LikeService.toggleLike(user_id, target_id)
         } catch (error) {
             set.status = "Bad Request"
             throw error
@@ -23,7 +24,8 @@ export const LikeController = new Elysia({
     }, {
         detail: { summary: "Toggle Like" },
         isSignIn: true,
-        body: "target_id"
+        body: "target_id",
+        response: "like_result"
     })
     .get('/follower', async ({ Auth, query }) => {
         const user_id = (Auth.payload as AuthPayload).id
@@ -42,6 +44,16 @@ export const LikeController = new Elysia({
         return user_pagination
     }, {
         detail: { summary: "Get Following" },
+        isSignIn: true,
+        query: "pagination",
+        response: "users"
+    })
+
+    .get('/matches', async ({ Auth, query }) => {
+        const user_id = (Auth.payload as AuthPayload).id
+        return LikeService.getMatches(user_id, query)
+    }, {
+        detail: { summary: "Get Matches — people I follow who follow me back" },
         isSignIn: true,
         query: "pagination",
         response: "users"
