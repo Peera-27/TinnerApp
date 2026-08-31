@@ -73,6 +73,13 @@ html.theme-dark {
 
     --tn-header-h: 68px;
     --tn-ease: cubic-bezier(.22, 1, .36, 1);
+
+    /* One content width for the whole app, top bar included. They used to
+       disagree — the bar capped at 1440 while pages capped at 1220 — so the logo
+       sat 64px to the left of every page heading below it. Both read this now,
+       and so does the gutter, so the two left edges cannot drift apart again. */
+    --tn-content: 1320px;
+    --tn-gutter: 24px;
 }
 
 // -----------------------------------------------------------------------------
@@ -152,6 +159,63 @@ img {
     background-clip: content-box;
 }
 
+// Material makes each tab panel its own scroll container. On a phone that turns
+// the profile form into a box that scrolls inside a page that also scrolls, and
+// the 10px scrollbar above draws as a stray vertical line down the right edge.
+// Letting the panel grow puts everything back on one scrollbar — the page's.
+// Material makes each tab panel its own scroll container: the panel gets
+// `overflow-y: auto`, so the profile form scrolled inside a box that sat inside
+// a page that also scrolled, and the 10px scrollbar above drew as a stray
+// vertical line down the right edge of the tab strip. Both the body and its
+// content need releasing — the body is the one that actually scrolls. Two
+// classes deep so it outranks Material's own single-class rules without
+// reaching for !important.
+.mat-mdc-tab-body-wrapper .mat-mdc-tab-body,
+.mat-mdc-tab-body-wrapper .mat-mdc-tab-body-content {
+    overflow: visible;
+}
+
+// The active panel carries Material's own `overflow: hidden auto`, and both
+// axes have to be released together: CSS turns `overflow-y: visible` back into
+// `auto` for as long as the other axis is `hidden`, so freeing one alone leaves
+// the scrollbar exactly where it was. Verified by sampling the pixels down that
+// column — the band drops from 60 to the card's own 1px border once both go.
+.mat-mdc-tab-body-wrapper .mat-mdc-tab-body {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+
+// the wrapper is sized to the tallest panel for the slide animation; letting it
+// grow keeps the released panels from being clipped straight back again
+.mat-mdc-tab-body-wrapper {
+    overflow: visible;
+}
+
+// Material reserves exactly one line under every field for a hint or an error
+// and pins that slot to a fixed height with overflow showing. A hint that wraps
+// — "Only used to get you back in if you forget your password" is two lines on a
+// phone — spills 16px past its slot and lands on top of the next input. Keeping
+// the 20px as a minimum still reserves the line, so nothing jumps when an error
+// appears, but a longer message now pushes the form down instead of over it.
+.mat-mdc-form-field .mat-mdc-form-field-subscript-wrapper {
+    height: auto;
+    min-height: 20px;
+}
+
+// Raising that height alone changed nothing: Material positions the hint and
+// the error absolutely inside the slot, so neither has ever contributed to it.
+// Static is what lets a wrapped message claim the room it needs.
+.mat-mdc-form-field .mat-mdc-form-field-hint-wrapper,
+.mat-mdc-form-field .mat-mdc-form-field-error-wrapper {
+    position: static;
+}
+
+// a 16px spacer that only existed to prop the slot open for that absolute
+// content; with the content back in flow it just adds an empty line
+.mat-mdc-form-field .mat-mdc-form-field-bottom-align::before {
+    display: none;
+}
+
 // Material Symbols, falling back to the classic icon font if it fails to load.
 .material-icons,
 .mat-icon {
@@ -165,14 +229,17 @@ img {
 // -----------------------------------------------------------------------------
 .tn-page {
     width: 100%;
-    max-width: 1220px;
+    max-width: var(--tn-content);
     margin: 0 auto;
-    padding: 28px 24px 96px;
+    padding: 28px var(--tn-gutter) 96px;
     text-align: left;
 }
 
+// Every page shares one width now, so this only survives to keep the listing
+// templates working. Widening it again would put their headings out of line
+// with the top bar.
 .tn-page--wide {
-    max-width: 1440px;
+    max-width: var(--tn-content);
 }
 
 .tn-page-head {
@@ -273,10 +340,16 @@ img {
     box-shadow: 0 14px 36px rgba(255, 77, 109, .42);
 }
 
+// Swapping the gradient for flat grey turned the button into a dead slab that
+// read as broken rather than as "nothing to save yet". Keeping its own colour
+// and dimming it says the same thing without losing the shape people are
+// waiting to press.
 .tn-btn-gradient.mat-mdc-button-base:disabled {
-    background: var(--tn-surface-3) !important;
-    color: var(--tn-text-faint) !important;
+    background: var(--tn-gradient) !important;
+    color: #fff !important;
+    opacity: .42;
     box-shadow: none;
+    cursor: not-allowed;
 }
 
 // -----------------------------------------------------------------------------
@@ -397,7 +470,8 @@ img {
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    font-size: .72rem;
+    // 11.5px is below the point where uppercase tracked-out text stays readable
+    font-size: .78rem;
     color: #fff;
 }
 
@@ -423,6 +497,39 @@ img {
 
 @media (max-width: 640px) {
     .tn-page {
-        padding: 20px 16px 108px;
+        --tn-gutter: 16px;
+        padding: 16px var(--tn-gutter) 108px;
+    }
+
+    // A phone screen is ~844px tall and the header, title, blurb, count pill and
+    // search bar were eating 394px of it before the first face appeared. These
+    // trim roughly a quarter of that back without dropping anything.
+    .tn-page-head {
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .tn-page-head p {
+        margin-top: 3px;
+        font-size: .88rem;
+        line-height: 1.35;
+    }
+
+    .list-grid {
+        margin-top: 16px;
+    }
+
+    // Angular Material ships its buttons at 40px, four short of the size a
+    // fingertip reliably lands on. Raising it here catches every one of them —
+    // Search, Save changes, the paginator arrows — instead of per screen.
+    .mat-mdc-button-base {
+        min-height: 44px;
+    }
+
+    .mat-mdc-icon-button {
+        --mdc-icon-button-state-layer-size: 44px;
+        width: 44px;
+        height: 44px;
+        padding: 10px;
     }
 }

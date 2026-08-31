@@ -18,9 +18,11 @@
     align-items: center;
     gap: 10px;
     height: 100%;
-    max-width: 1440px;
+    // same width and gutter as .tn-page, so the logo starts on the exact column
+    // the page heading underneath it starts on
+    max-width: var(--tn-content);
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 var(--tn-gutter);
 }
 
 /* -------------------------------------------------- brand */
@@ -28,6 +30,9 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    // the 38px mark is the right size to look at; the link around it still needs
+    // to be 44 tall to be the right size to hit
+    min-height: 44px;
     text-decoration: none;
     flex: 0 0 auto;
 
@@ -152,8 +157,9 @@
 .icon-btn {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
+    // 44px is the smallest a finger reliably hits; 40 was a near miss on phones
+    width: 44px;
+    height: 44px;
     flex: 0 0 auto;
     border: 1px solid var(--tn-border);
     border-radius: 50%;
@@ -303,7 +309,7 @@
     justify-content: center;
     gap: 3px;
     color: var(--tn-text-faint);
-    font-size: .68rem;
+    font-size: .75rem;
     font-weight: 600;
     text-decoration: none;
 

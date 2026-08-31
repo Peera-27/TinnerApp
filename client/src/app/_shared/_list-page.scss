@@ -1,7 +1,11 @@
 // Shared layout for the three people listings (Discover / Followers / Following).
 .list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    // auto-fit, not auto-fill: auto-fill keeps the empty tracks it made room
+    // for, so four people on a wide screen sat squashed against the left with a
+    // fifth column of nothing beside them. auto-fit collapses the empty tracks
+    // and lets the cards share the width instead.
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 22px;
     margin-top: 26px;
 }

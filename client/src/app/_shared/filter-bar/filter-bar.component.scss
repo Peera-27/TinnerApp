@@ -143,12 +143,20 @@
 }
 
 @media (max-width: 620px) {
+    // the bar stacks into two rows here, so every bit of chrome around it is
+    // paid for twice — it was 132px of a 844px screen before the first face
+    .filters {
+        padding: 10px;
+    }
+
     .filters__row {
         flex-wrap: wrap;
+        gap: 8px;
     }
 
     .searchbox {
         flex: 1 1 100%;
+        height: 42px;
     }
 
     .toggle {

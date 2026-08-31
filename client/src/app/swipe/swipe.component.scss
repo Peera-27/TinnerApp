@@ -184,6 +184,9 @@
     align-items: center;
     gap: 6px;
     margin-top: 14px;
+    // 17px of underlined text sits right on top of the swipe area, so it wants a
+    // hit target big enough that reaching for it is not a gamble
+    min-height: 44px;
     color: #fff;
     font-size: .84rem;
     font-weight: 700;
@@ -335,6 +338,21 @@
 @media (max-width: 520px) {
     .deck {
         aspect-ratio: 2 / 3;
+        // 2/3 of the full 358px column is a 537px card, which on a 390x844 phone
+        // pushed the skip/like buttons 20px under the tab bar and buried the
+        // hint line entirely — the two controls this screen exists for were off
+        // screen until you scrolled. Size the card from the height that is
+        // actually free instead, so card, buttons and hint all land above the
+        // bar. The reserve covers the header, page heading, controls and hint.
+        width: min(100%, calc((100dvh - 386px) * 2 / 3));
+    }
+
+    .controls {
+        margin-top: 16px;
+    }
+
+    .hint {
+        margin-top: 10px;
     }
 
     .ctrl {

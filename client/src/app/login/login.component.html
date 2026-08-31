@@ -32,7 +32,6 @@
         <div class="grid">
           <mat-form-field appearance="outline" class="col-2">
             <mat-label>Username</mat-label>
-            <mat-icon matIconPrefix>alternate_email</mat-icon>
             <input matInput type="text" placeholder="yourname" formControlName="username"
               (input)="updateErrorMessgae('username')" />
             @if (isRegister) {
@@ -44,7 +43,6 @@
           @if (isRegister) {
           <mat-form-field appearance="outline" class="col-2">
             <mat-label>Display name</mat-label>
-            <mat-icon matIconPrefix>badge</mat-icon>
             <input matInput type="text" placeholder="What should we call you?" formControlName="display_name"
               (input)="updateErrorMessgae('display_name')" />
             <mat-error>{{ errorMessages.display_name() }}</mat-error>
@@ -52,15 +50,13 @@
 
           <mat-form-field appearance="outline" class="col-2">
             <mat-label>Email (optional)</mat-label>
-            <mat-icon matIconPrefix>mail</mat-icon>
             <input matInput type="email" placeholder="you@example.com" formControlName="email" />
             <mat-hint>Only used to get you back in if you forget your password.</mat-hint>
           </mat-form-field>
           }
 
-          <mat-form-field appearance="outline" [class.col-2]="!isRegister">
+          <mat-form-field appearance="outline" class="col-2">
             <mat-label>Password</mat-label>
-            <mat-icon matIconPrefix>lock</mat-icon>
             <input matInput [type]="hidePassword() ? 'password' : 'text'" placeholder="••••••••"
               formControlName="password" (input)="updateErrorMessgae('password')" />
             <button mat-icon-button matIconSuffix type="button" (click)="hidePassword.set(!hidePassword())"
@@ -71,9 +67,8 @@
           </mat-form-field>
 
           @if (isRegister) {
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="col-2">
             <mat-label>Confirm password</mat-label>
-            <mat-icon matIconPrefix>lock_reset</mat-icon>
             <input matInput [type]="hideConfirm() ? 'password' : 'text'" placeholder="••••••••"
               formControlName="confirm_password" (input)="updateErrorMessgae('confirm_password')" />
             <button mat-icon-button matIconSuffix type="button" (click)="hideConfirm.set(!hideConfirm())"
@@ -107,7 +102,6 @@
         <div class="grid">
           <mat-form-field appearance="outline" class="col-2">
             <mat-label>Date of birth</mat-label>
-            <mat-icon matIconPrefix>cake</mat-icon>
             <input matInput [min]="mindate" [max]="maxdate" [matDatepicker]="picker" formControlName="date_of_birth"
               placeholder="You must be 18 or older" />
             <mat-datepicker-toggle matIconSuffix [for]="picker" />

@@ -74,6 +74,13 @@
 }
 
 .card {
+    // a column with a gap, so anything dropped straight into a card is spaced.
+    // The story card puts two textareas side by side as plain block children,
+    // and block layout gives mat-form-field no margin at all — they were sitting
+    // on each other with a 0px gap.
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     padding: 24px;
     border-radius: var(--tn-r-lg);
     background: var(--tn-surface);
@@ -84,7 +91,8 @@
         display: flex;
         align-items: center;
         gap: 9px;
-        margin-bottom: 18px;
+        // the column gap above provides the space under the heading now
+        margin-bottom: 0;
         font-size: 1.02rem;
         font-weight: 700;
 
@@ -100,7 +108,11 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4px 16px;
+    // A 4px row gap left the hint under one field almost touching the box of the
+    // next one — every field reserves 20px for its hint whether it has one or
+    // not, so the text and the box below it ended up 4px apart and the whole
+    // form read as one crammed block.
+    gap: 14px 16px;
 }
 
 .col-2 {
@@ -116,15 +128,21 @@
 .actionbar {
     position: sticky;
     bottom: 16px;
+    // it floats over whatever is above it as you scroll, so it has to sit on its
+    // own ground and above it in the stack — without both, the save button
+    // landed straight on the interests hint with the text showing through
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 14px;
-    padding: 14px 18px;
+    margin-top: 10px;
+    padding: 12px 14px;
     border-radius: var(--tn-r-full);
-    background: color-mix(in srgb, var(--tn-surface) 88%, transparent);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--tn-border);
+    background: color-mix(in srgb, var(--tn-surface) 94%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--tn-border-strong);
     box-shadow: var(--tn-sh-3);
 }
 
@@ -228,21 +246,24 @@
     max-width: 880px;
 }
 
-/* The bar only earns its weight once there is something to say or do in it. */
+/* The bar only earns its full weight once there is something to say or do in
+   it — but it is sticky in every state, so it is always floating over the end of
+   the form. Dropping its background entirely was what let the interests hint
+   read straight through the save button. It keeps a quiet ground of its own now
+   and gains the heavier border and shadow only when there is a change to save. */
 .actionbar {
     justify-content: flex-end;
-    background: transparent;
-    backdrop-filter: none;
-    border: 0;
-    box-shadow: none;
-    padding: 4px 0 0;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--tn-surface) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--tn-border);
+    box-shadow: var(--tn-sh-2);
 }
 
 .actionbar:has(.saved),
 .actionbar:has(.unsaved) {
     padding: 14px 18px;
-    background: color-mix(in srgb, var(--tn-surface) 88%, transparent);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--tn-border);
+    border-color: var(--tn-border-strong);
     box-shadow: var(--tn-sh-3);
 }

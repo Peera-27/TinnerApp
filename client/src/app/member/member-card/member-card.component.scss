@@ -249,6 +249,9 @@
     align-items: center;
     gap: 6px;
     margin-top: auto;
+    // the link's own text is only 21px tall, which is a poor thing to aim a
+    // thumb at; the padding grows the hit area without moving the label
+    min-height: 44px;
     padding-top: 4px;
     color: var(--tn-brand-1);
     font-size: .86rem;
