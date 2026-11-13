@@ -10,6 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Query Supabase
+        env:
+          RAW_URL: ${{ secrets.SUPABASE_URL }}
+          RAW_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          curl -fsS "${{ secrets.SUPABASE_URL }}/rest/v1/keep_alive?select=id&limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
+          URL=$(printf '%s' "$RAW_URL" | tr -d '[:space:]')
+          KEY=$(printf '%s' "$RAW_KEY" | tr -d '[:space:]')
+          URL="${URL%/}"
+          URL="${URL%/rest/v1}"
+
+          if [ -z "$URL" ]; then echo "SUPABASE_URL ว่างอยู่ หรือชื่อ secret ไม่ตรง"; exit 1; fi
+          if [ -z "$KEY" ]; then echo "SUPABASE_ANON_KEY ว่างอยู่ หรือชื่อ secret ไม่ตรง"; exit 1; fi
+
+          curl -fsS "$URL/rest/v1/keep_alive?select=id&limit=1" -H "apikey: $KEY"
